@@ -1,7 +1,7 @@
 import pygame
 
 from src.utils.autotile import compute_autotile_variations
-from src.renderer.tile_renderer import render_tiles
+from src.renderer.tile import render_tiles
 
 
 class UIModal:
