@@ -19,7 +19,7 @@ font_dir = os.path.join("assets", "fonts", "default")
 font = FontLoader.load_font_from_directory(font_dir)
 
 # Demo text
-text = "Hello, World! This is a font rendering demo. 1234567890"
+text = "Hello, World! This is a font rendering demo. 1234567890. Also tiles test is below."
 
 # Load tiles
 tiles_dir = os.path.join("assets", "textures", "tiles", "default")
