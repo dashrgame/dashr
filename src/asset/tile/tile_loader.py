@@ -18,23 +18,24 @@ class TileLoader:
         with open(tileset_json_path, "r", encoding="utf-8") as f:
             tileset_data = json.load(f)
 
-        # Find tileset.png
-        tileset_image_path = os.path.join(directory, "tileset.png")
-        if not os.path.isfile(tileset_image_path):
-            raise FileNotFoundError(f"tileset.png not found in directory: {directory}")
-
-        tileset_image = Image.open(tileset_image_path).convert("RGBA")
-
-        tiles_info = tileset_data.get("tiles", {})
-        for tile_position, tile_id in tiles_info.items():
-            x_str, y_str = tile_position.split(",")
-            x, y = int(x_str), int(y_str)
-
-            tile_image = tileset_image.crop(
-                (x * 16, y * 16, (x + 1) * 16, (y + 1) * 16)
+        # Make sure tiles folder exists
+        tiles_folder = os.path.join(directory, "tiles")
+        if not os.path.isdir(tiles_folder):
+            raise FileNotFoundError(
+                f"'tiles' folder not found in directory: {directory}"
             )
 
-            tile = AssetTile(tile_id, tile_image)
-            tiles[tile_id] = tile
+        # Load each tile from the tiles folder
+        for tile_filename in os.listdir(tiles_folder):
+            if tile_filename.endswith(".png"):
+                tile_name = os.path.splitext(tile_filename)[0]
+                tile_path = os.path.join(tiles_folder, tile_filename)
+
+                # Load image
+                image = Image.open(tile_path).convert("RGBA")
+
+                # Create AssetTile
+                tile = AssetTile(id=tile_name, image=image)
+                tiles[tile_name] = tile
 
         return tiles
