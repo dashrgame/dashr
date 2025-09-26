@@ -10,7 +10,7 @@ from src.renderer.tile import render_tile
 pygame.init()
 
 # Set up display
-WIDTH, HEIGHT = 1500, 480
+WIDTH, HEIGHT = 800, 480
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Font Render Demo")
 
