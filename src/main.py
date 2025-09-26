@@ -39,7 +39,7 @@ while running:
 
     # Render a tile for demonstration
     if "tile_green_full" in loaded_tiles:
-        render_tile(screen, loaded_tiles["tile_green_full"], (50, 200))
+        render_tile(screen, loaded_tiles["tile_green_full"], (50, 200), scale=2)
 
     pygame.display.flip()
 
