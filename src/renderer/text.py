@@ -41,9 +41,7 @@ def render_text(
             box_size = int(font.size * scale)
             py_img = pygame.Surface((box_size, box_size), pygame.SRCALPHA)
             # Draw "tofu"
-            pygame.draw.rect(
-                py_img, (0, 0, 0, 255), py_img.get_rect(), width=scale
-            )
+            pygame.draw.rect(py_img, (0, 0, 0, 255), py_img.get_rect(), width=scale)
             surface.blit(py_img, (x, y))
             x += box_size + (spacing * scale)
             continue

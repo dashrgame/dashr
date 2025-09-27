@@ -12,7 +12,7 @@ pygame.init()
 # Set up display
 WIDTH, HEIGHT = 800, 480
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Font Render Demo")
+pygame.display.set_caption("Dashr Demo")
 
 # Load font
 font_dir = os.path.join("assets", "fonts", "default")
