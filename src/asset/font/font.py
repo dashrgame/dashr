@@ -2,6 +2,7 @@ from PIL import Image
 
 from src.asset.font.character import FontCharacter
 
+
 class Font:
     def __init__(self, size: int, characters: dict[str, FontCharacter]):
         self.size = size
