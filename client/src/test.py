@@ -1,19 +1,25 @@
 import pygame
 import os
 
-from src.ui.manager import UIManager
-from src.ui.page import UIPage
-from src.ui.components import Button, TextInput, Dropdown, NumberInput, LoadingBar
-from src.ui.modal import Modal
-from src.ui.notification import Notification
-from src.asset.font.font_loader import FontLoader
+from client.src.ui.manager import UIManager
+from client.src.ui.page import UIPage
+from client.src.ui.components import (
+    Button,
+    TextInput,
+    Dropdown,
+    NumberInput,
+    LoadingBar,
+)
+from client.src.ui.modal import Modal
+from client.src.ui.notification import Notification
+from client.src.asset.font.font_loader import FontLoader
 
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
 # Load font
-font_dir = os.path.join("assets", "fonts", "default")
+font_dir = os.path.join("client", "assets", "fonts", "default")
 font = FontLoader.load_font_from_directory(font_dir)
 
 # Create UI elements
@@ -25,7 +31,14 @@ dropdown = Dropdown(50, 170, 200, 40, ["Option 1", "Option 2", "Option 3"], font
 number_input = NumberInput(50, 230, 200, 40, font=font)
 loading_bar = LoadingBar(50, 290, 200, 30, 0.5, font=font)
 modal = Modal(
-    300, 100, 300, 200, "Modal Title", "Modal Content", lambda: print("Modal closed"), font=font
+    300,
+    100,
+    300,
+    200,
+    "Modal Title",
+    "Modal Content",
+    lambda: print("Modal closed"),
+    font=font,
 )
 notification = Notification(50, 350, 300, 40, "Hello, Notification!", 3.0, font=font)
 

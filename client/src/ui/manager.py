@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 import pygame
 
-from src.ui.page import UIPage
+from client.src.ui.page import UIPage
 
 
 class UIManager:

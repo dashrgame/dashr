@@ -2,7 +2,7 @@ from PIL import Image
 import os
 import json
 
-from src.asset.tile.tile import AssetTile
+from client.src.asset.tile.tile import AssetTile
 
 
 class TileLoader:

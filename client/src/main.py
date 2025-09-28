@@ -1,10 +1,10 @@
 import pygame
 import os
 
-from src.asset.font.font_loader import FontLoader
-from src.asset.tile.tile_loader import TileLoader
-from src.renderer.text import render_text
-from src.renderer.tile import render_tile
+from client.src.asset.font.font_loader import FontLoader
+from client.src.asset.tile.tile_loader import TileLoader
+from client.src.renderer.text import render_text
+from client.src.renderer.tile import render_tile
 
 # Initialize pygame
 pygame.init()
@@ -15,14 +15,16 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Dashr Demo")
 
 # Load font
-font_dir = os.path.join("assets", "fonts", "default")
+font_dir = os.path.join("client", "assets", "fonts", "default")
 font = FontLoader.load_font_from_directory(font_dir)
 
 # Demo text
-text = "Hello, World! This is a font rendering demo. 1234567890. Also tiles test is below."
+text = (
+    "Hello, World! This is a font rendering demo. 1234567890. Also tiles test is below."
+)
 
 # Load tiles
-tiles_dir = os.path.join("assets", "textures", "tiles", "default")
+tiles_dir = os.path.join("client", "assets", "textures", "tiles", "default")
 loaded_tiles = TileLoader.load_tiles_from_directory(tiles_dir)
 
 # Main loop
