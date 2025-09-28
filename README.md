@@ -2,7 +2,7 @@
   <img src="images/logo.png" alt="Logo" width="200" height="200"/>
 </p>
 
-<h1 align="center">dashr</h1>
+<h1 align="center">Dashr</h1>
 
 <p align="center">
   <em>a game about playing and making platformers</em>
