@@ -209,3 +209,7 @@ __marimo__/
 
 # dashr Specific
 /settings/
+
+# Art and music folders
+/art/
+/music/
