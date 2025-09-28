@@ -39,8 +39,7 @@
 
 <br/>
 
-By contributing to this project, you agree that your contributions are licensed under the MIT license and may not be revoked.
-
 ## License
 
 This project is licensed under the MIT License described in the [LICENSE](LICENSE) file.
+By contributing to this project, you agree that your contributions are licensed under the MIT license and may not be revoked.
