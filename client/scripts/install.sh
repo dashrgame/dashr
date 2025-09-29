@@ -80,6 +80,7 @@ if [ -d "$INSTALL_DIR" ]; then
   echo "Previous installation deleted."
 
   # Delete launcher if confirmed
+  sudo -v  # Ensure sudo password prompt appears before deletion
   delete_file_if_confirmed_sudo "$LAUNCHER_PATH" "Do you want to DELETE the launcher script at $LAUNCHER_PATH? (y/N): "
 
   # Delete desktop file if confirmed (Linux only)
