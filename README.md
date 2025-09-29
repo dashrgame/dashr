@@ -42,9 +42,8 @@
 
 - **Intuitive Level Editor**: Build platformer levels with drag-and-drop tools.
 - **Play & Share**: Play levels made by others or share your own creations.
-- **Customizable Characters**: Unlock and personalize your avatar.
+- **Customizable Profile**: Customise your avatar and your entire profile!
 - **Community Challenges**: Compete in weekly events and leaderboards.
-- **Cross-platform**: Runs on Windows, macOS, and Linux.
 
 ---
 
