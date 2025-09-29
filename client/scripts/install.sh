@@ -2,61 +2,95 @@
 
 set -e
 
+
+# Configurable variables
 REPO_URL="https://github.com/dashrgame/dashr.git"
 INSTALL_DIR="$HOME/dashr"
 PYTHON_VERSION="3.8"
 VENV_DIR="$INSTALL_DIR/venv"
 LAUNCHER_PATH="/usr/local/bin/dashr"
 
-# Check for git
-if ! command -v git &> /dev/null; then
-  echo "Error: git is not installed."
-  exit 1
-fi
+# Helper functions
+confirm() {
+  local prompt="$1"
+  local var
+  read -p "$prompt" var
+  [[ "$var" =~ ^[Yy]$ ]]
+}
 
-# Check for python
-if ! command -v python3 &> /dev/null; then
-  echo "Error: python3 is not installed."
-  exit 1
-fi
+confirm_delete() {
+  local prompt="$1"
+  local var
+  read -p "$prompt" var
+  [[ "$var" == "DELETE" ]]
+}
 
+delete_file_if_confirmed() {
+  local file="$1"
+  local prompt="$2"
+  if [ -f "$file" ]; then
+    if confirm "$prompt"; then
+      rm -f "$file"
+      echo "Deleted $file."
+    fi
+  fi
+}
+
+
+# Check for required tools
+for cmd in git python3; do
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "Error: $cmd is not installed."
+    exit 1
+  fi
+done
+
+# Check Python version
 PY_VER=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
 if [[ "$(printf '%s\n' "$PY_VER" "$PYTHON_VERSION" | sort -V | head -n1)" != "$PYTHON_VERSION" ]]; then
   echo "Warning: Python $PYTHON_VERSION or above is recommended, but $PY_VER is installed."
 fi
 
-# Check for existing installation
+
+# Handle existing installation
 if [ -d "$INSTALL_DIR" ]; then
   echo "An existing Dashr installation was found at $INSTALL_DIR."
   echo "WARNING: Reinstalling will DELETE ALL SETTINGS and ALL LOCAL LEVELS."
-  read -p "Are you sure you want to DELETE and REINSTALL Dashr? (y/N): " CONFIRM1
-  if [[ ! "$CONFIRM1" =~ ^[Yy]$ ]]; then
+  if ! confirm "Are you sure you want to DELETE and REINSTALL Dashr? (y/N): "; then
     echo "Aborting installation."
     exit 1
   fi
   echo "This action is IRREVERSIBLE. ALL LOCAL DATA WILL BE LOST."
-  read -p "Please type 'DELETE' to confirm: " CONFIRM2
-  if [[ "$CONFIRM2" != "DELETE" ]]; then
+  if ! confirm_delete "Please type 'DELETE' to confirm: "; then
     echo "Aborting installation."
     exit 1
   fi
   rm -rf "$INSTALL_DIR"
   echo "Previous installation deleted."
+
+  # Delete launcher if confirmed
+  delete_file_if_confirmed "$LAUNCHER_PATH" "Do you want to DELETE the launcher script at $LAUNCHER_PATH? (y/N): "
+
+  # Delete desktop file if confirmed (Linux only)
+  OS=$(uname -s)
+  if [[ "$OS" == "Linux" ]]; then
+    delete_file_if_confirmed "$HOME/.local/share/applications/dashr.desktop" "Do you want to DELETE the desktop file at $HOME/.local/share/applications/dashr.desktop? (y/N): "
+  fi
 fi
+
 
 # Clone repo
 git clone "$REPO_URL" "$INSTALL_DIR"
 cd "$INSTALL_DIR"
 
-# Try to create virtualenv
+# Create virtualenv or fallback
 if python3 -m venv "$VENV_DIR"; then
   source "$VENV_DIR/bin/activate"
   echo "Using virtual environment at $VENV_DIR."
   PIP_CMD="pip"
 else
   echo "Warning: Could not create virtual environment."
-  read -p "Do you want to install dependencies using --break-system-packages? (y/N): " CONFIRM
-  if [[ "$CONFIRM" =~ ^[Yy]$ ]]; then
+  if confirm "Do you want to install dependencies using --break-system-packages? (y/N): "; then
     PIP_CMD="python3 -m pip --break-system-packages"
   else
     echo "Aborting installation."
@@ -72,6 +106,7 @@ else
   echo "No requirements.txt found. Skipping dependency installation."
 fi
 
+
 # Create launcher script
 echo "Creating launcher at $LAUNCHER_PATH (requires sudo)..."
 sudo tee "$LAUNCHER_PATH" > /dev/null <<EOF
@@ -80,12 +115,13 @@ cd "$INSTALL_DIR"
 if [ -d "$VENV_DIR" ]; then
   source "$VENV_DIR/bin/activate"
 fi
-exec python3 -m client.src.main "\$@"
+exec python3 -m client.src.main "$@"
 EOF
 sudo chmod +x "$LAUNCHER_PATH"
 echo "Launcher script installed to $LAUNCHER_PATH."
 
-# Check OS
+
+# OS-specific setup
 OS=$(uname -s)
 echo "Detected OS: $OS"
 
