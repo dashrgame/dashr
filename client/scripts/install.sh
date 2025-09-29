@@ -24,6 +24,25 @@ if [[ "$(printf '%s\n' "$PY_VER" "$PYTHON_VERSION" | sort -V | head -n1)" != "$P
   echo "Warning: Python $PYTHON_VERSION or above is recommended, but $PY_VER is installed."
 fi
 
+# Check for existing installation
+if [ -d "$INSTALL_DIR" ]; then
+  echo "An existing Dashr installation was found at $INSTALL_DIR."
+  echo "WARNING: Reinstalling will DELETE ALL SETTINGS and ALL LOCAL LEVELS."
+  read -p "Are you sure you want to DELETE and REINSTALL Dashr? (y/N): " CONFIRM1
+  if [[ ! "$CONFIRM1" =~ ^[Yy]$ ]]; then
+    echo "Aborting installation."
+    exit 1
+  fi
+  echo "This action is IRREVERSIBLE. ALL LOCAL DATA WILL BE LOST."
+  read -p "Please type 'DELETE' to confirm: " CONFIRM2
+  if [[ "$CONFIRM2" != "DELETE" ]]; then
+    echo "Aborting installation."
+    exit 1
+  fi
+  rm -rf "$INSTALL_DIR"
+  echo "Previous installation deleted."
+fi
+
 # Clone repo
 git clone "$REPO_URL" "$INSTALL_DIR"
 cd "$INSTALL_DIR"
