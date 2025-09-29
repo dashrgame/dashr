@@ -1,4 +1,5 @@
 from PIL import Image
+import hashlib
 
 
 class AssetTile:
@@ -13,3 +14,8 @@ class AssetTile:
 
     def get_size(self) -> tuple[int, int]:
         return self.size
+
+    def compute_hash(self) -> str:
+        # Compute a hash of the image data for unique identification
+        img_bytes = self.image.tobytes()
+        return hashlib.md5(img_bytes).hexdigest()
