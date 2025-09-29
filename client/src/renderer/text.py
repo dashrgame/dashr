@@ -1,7 +1,7 @@
 import pygame
 from typing import Tuple
 
-from src.asset.font.font import Font
+from client.src.asset.font.font import Font
 
 
 def render_text(

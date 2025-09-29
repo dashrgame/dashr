@@ -1,6 +1,6 @@
 import pygame
 
-from src.asset.tile.tile import AssetTile
+from client.src.asset.tile.tile import AssetTile
 
 
 def render_tile(

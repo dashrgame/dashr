@@ -1,6 +1,6 @@
 from PIL import Image
 
-from src.asset.font.character import FontCharacter
+from client.src.asset.font.character import FontCharacter
 
 
 class Font:

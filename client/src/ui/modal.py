@@ -1,8 +1,8 @@
 from typing import Callable, Any, Optional
 import pygame
 
-from src.ui.element import UIElement
-from src.renderer.text import render_text
+from client.src.ui.element import UIElement
+from client.src.renderer.text import render_text
 
 
 class Modal(UIElement):

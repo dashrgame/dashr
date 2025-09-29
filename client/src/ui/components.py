@@ -1,9 +1,9 @@
 from typing import Callable, Any, List, Optional
 import pygame
 
-from src.ui.element import UIElement
-from src.asset.font.font import Font
-from src.renderer.text import render_text
+from client.src.ui.element import UIElement
+from client.src.asset.font.font import Font
+from client.src.renderer.text import render_text
 
 
 class Button(UIElement):

@@ -2,8 +2,8 @@ from PIL import Image
 import os
 import json
 
-from src.asset.font.character import FontCharacter
-from src.asset.font.font import Font
+from client.src.asset.font.character import FontCharacter
+from client.src.asset.font.font import Font
 
 
 class FontLoader:
