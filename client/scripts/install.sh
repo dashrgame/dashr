@@ -30,8 +30,8 @@ cd "$INSTALL_DIR"
 
 # Install python dependencies
 if [ -f "client/src/requirements.txt" ]; then
-  python3 -m pip install --upgrade pip
-  python3 -m pip install -r client/src/requirements.txt
+  python3 -m pip install --break-system-packages --upgrade pip
+  python3 -m pip install --break-system-packages -r client/src/requirements.txt
 else
   echo "No requirements.txt found. Skipping dependency installation."
 fi
