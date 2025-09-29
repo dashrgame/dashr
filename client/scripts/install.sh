@@ -20,8 +20,8 @@ if ! command -v python3 &> /dev/null; then
 fi
 
 PY_VER=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
-if [[ "$PY_VER" != "$PYTHON_VERSION" ]]; then
-  echo "Warning: Python $PYTHON_VERSION is recommended, but $PY_VER is installed."
+if [[ "$(printf '%s\n' "$PY_VER" "$PYTHON_VERSION" | sort -V | head -n1)" != "$PYTHON_VERSION" ]]; then
+  echo "Warning: Python $PYTHON_VERSION or above is recommended, but $PY_VER is installed."
 fi
 
 # Clone repo
