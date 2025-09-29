@@ -66,7 +66,7 @@
 ### Installation Script
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/dashrgame/dashr/refs/heads/main/client/scripts/install.sh)"
+/bin/bash -c "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/dashrgame/dashr/refs/heads/main/client/scripts/install.sh)"
 ```
 
 ---

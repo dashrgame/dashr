@@ -36,6 +36,17 @@ delete_file_if_confirmed() {
   fi
 }
 
+delete_file_if_confirmed_sudo() {
+  local file="$1"
+  local prompt="$2"
+  if [ -f "$file" ]; then
+    if confirm "$prompt"; then
+      sudo rm -f "$file"
+      echo "Deleted $file."
+    fi
+  fi
+}
+
 
 # Check for required tools
 for cmd in git python3; do
@@ -69,7 +80,7 @@ if [ -d "$INSTALL_DIR" ]; then
   echo "Previous installation deleted."
 
   # Delete launcher if confirmed
-  delete_file_if_confirmed "$LAUNCHER_PATH" "Do you want to DELETE the launcher script at $LAUNCHER_PATH? (y/N): "
+  delete_file_if_confirmed_sudo "$LAUNCHER_PATH" "Do you want to DELETE the launcher script at $LAUNCHER_PATH? (y/N): "
 
   # Delete desktop file if confirmed (Linux only)
   OS=$(uname -s)
