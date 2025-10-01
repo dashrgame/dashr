@@ -2,11 +2,10 @@
 
 set -e
 
-
 # Configurable variables
 REPO_URL="https://github.com/dashrgame/dashr.git"
 INSTALL_DIR="$HOME/dashr"
-PYTHON_VERSION="3.8"
+USER_DATA_DIR="$HOME/dashr-data"
 VENV_DIR="$INSTALL_DIR/venv"
 LAUNCHER_PATH="/usr/local/bin/dashr"
 
@@ -18,35 +17,6 @@ confirm() {
   [[ "$var" =~ ^[Yy]$ ]]
 }
 
-confirm_delete() {
-  local prompt="$1"
-  local var
-  read -p "$prompt" var
-  [[ "$var" == "DELETE" ]]
-}
-
-delete_file_if_confirmed() {
-  local file="$1"
-  local prompt="$2"
-  if [ -f "$file" ]; then
-    if confirm "$prompt"; then
-      rm -f "$file"
-      echo "Deleted $file."
-    fi
-  fi
-}
-
-delete_file_if_confirmed_sudo() {
-  local file="$1"
-  local prompt="$2"
-  if [ -f "$file" ]; then
-    if confirm "$prompt"; then
-      sudo rm -f "$file"
-      echo "Deleted $file."
-    fi
-  fi
-}
-
 
 # Check for required tools
 for cmd in git python3; do
@@ -56,38 +26,21 @@ for cmd in git python3; do
   fi
 done
 
-# Check Python version
-PY_VER=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
-if [[ "$(printf '%s\n' "$PY_VER" "$PYTHON_VERSION" | sort -V | head -n1)" != "$PYTHON_VERSION" ]]; then
-  echo "Warning: Python $PYTHON_VERSION or above is recommended, but $PY_VER is installed."
-fi
-
 
 # Handle existing installation
 if [ -d "$INSTALL_DIR" ]; then
   echo "An existing Dashr installation was found at $INSTALL_DIR."
-  echo "WARNING: Reinstalling will DELETE ALL SETTINGS and ALL LOCAL LEVELS."
-  if ! confirm "Are you sure you want to DELETE and REINSTALL Dashr? (y/N): "; then
-    echo "Aborting installation."
-    exit 1
-  fi
-  echo "This action is IRREVERSIBLE. ALL LOCAL DATA WILL BE LOST."
-  if ! confirm_delete "Please type 'DELETE' to confirm: "; then
-    echo "Aborting installation."
-    exit 1
-  fi
+  echo "Updating installation (user data in $USER_DATA_DIR will be preserved)..."
   rm -rf "$INSTALL_DIR"
-  echo "Previous installation deleted."
+  echo "Previous installation removed."
+fi
 
-  # Delete launcher if confirmed
-  sudo -v  # Ensure sudo password prompt appears before deletion
-  delete_file_if_confirmed_sudo "$LAUNCHER_PATH" "Do you want to DELETE the launcher script at $LAUNCHER_PATH? (y/N): "
-
-  # Delete desktop file if confirmed (Linux only)
-  OS=$(uname -s)
-  if [[ "$OS" == "Linux" ]]; then
-    delete_file_if_confirmed "$HOME/.local/share/applications/dashr.desktop" "Do you want to DELETE the desktop file at $HOME/.local/share/applications/dashr.desktop? (y/N): "
-  fi
+# Create user data directory if it doesn't exist
+if [ ! -d "$USER_DATA_DIR" ]; then
+  mkdir -p "$USER_DATA_DIR"
+  echo "Created user data directory at $USER_DATA_DIR"
+else
+  echo "User data directory found at $USER_DATA_DIR (will be preserved)"
 fi
 
 
@@ -165,7 +118,6 @@ elif [[ "$OS" == "Darwin" ]]; then
   else
     echo "3. Run the application: python3 -m client.src.main"
   fi
-  echo "You may want to create an alias or a shortcut for easier access."
 else
   echo "Error: Unsupported OS. Please use Linux or macOS."
   exit 1
