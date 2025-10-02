@@ -9,7 +9,7 @@ from client.src.renderer.text import render_text
 from client.src.renderer.tile import render_tile
 
 # Debug flag
-DEBUG = True
+DEBUG = os.getenv("DASHR_DEBUG", "false").lower() == "true"
 
 # Initialize pygame
 pygame.init()
@@ -17,7 +17,7 @@ pygame.init()
 # Set up display
 WIDTH, HEIGHT = 800, 480
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Dashr Demo")
+pygame.display.set_caption("Dashr Demo" + (" [DEBUG]" if DEBUG else ""))
 
 # Load font
 font_dir = os.path.join("client", "assets", "fonts", "default")
@@ -52,9 +52,15 @@ try:
         # Render text
         render_text(screen, text, font, (50, 100), scale=2, color=(0, 0, 0))
 
-        # Render a tile for demonstration
-        if "tile_green_full" in loaded_tiles:
-            render_tile(screen, loaded_tiles["tile_green_full"], (50, 200), scale=2)
+        # Render some tiles for demonstration
+        render_tile(screen, loaded_tiles["tile_green_full"], (50, 200), scale=2)
+        render_tile(screen, loaded_tiles["tile_blue_full"], (100, 200), scale=2)
+        render_tile(screen, loaded_tiles["tile_purple_full"], (150, 200), scale=2)
+        render_tile(screen, loaded_tiles["tile_cream_full"], (200, 200), scale=2)
+        render_tile(screen, loaded_tiles["tile_red_full"], (250, 200), scale=2)
+        render_tile(screen, loaded_tiles["tile_sky_full"], (300, 200), scale=2)
+        render_tile(screen, loaded_tiles["tile_pink_full"], (350, 200), scale=2)
+        render_tile(screen, loaded_tiles["tile_grey_full"], (400, 200), scale=2)
 
         # FPS tracking and display (only if DEBUG is enabled)
         if DEBUG:
