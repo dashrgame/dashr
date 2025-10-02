@@ -25,8 +25,8 @@ def render_text(
             color: (r, g, b) color to render text (default black)
     """
     x, y = pos
-    spacing = 2
-    extra_spacing = 2
+    spacing = 1
+    extra_spacing = 3
     space = " "
 
     for i, char in enumerate(text):
