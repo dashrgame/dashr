@@ -88,14 +88,21 @@ if [[ "$OS" == "Linux" ]]; then
   if [ -f "$DESKTOP_SOURCE" ]; then
     mkdir -p "$(dirname "$DESKTOP_FILE")"
     
-    # Only copy if files are different or destination doesn't exist
-    if [ ! -f "$DESKTOP_FILE" ] || ! cmp -s "$DESKTOP_SOURCE" "$DESKTOP_FILE"; then
-      cp "$DESKTOP_SOURCE" "$DESKTOP_FILE"
+    # Create a temporary file with resolved paths for comparison
+    TEMP_DESKTOP="/tmp/dashr.desktop.tmp"
+    sed "s|__INSTALL_DIR__|$INSTALL_DIR|g" "$DESKTOP_SOURCE" > "$TEMP_DESKTOP"
+    
+    # Only update if files are different or destination doesn't exist
+    if [ ! -f "$DESKTOP_FILE" ] || ! cmp -s "$TEMP_DESKTOP" "$DESKTOP_FILE"; then
+      cp "$TEMP_DESKTOP" "$DESKTOP_FILE"
       chmod +x "$DESKTOP_FILE"
-      echo "Desktop file updated at $DESKTOP_FILE"
+      echo "Desktop file updated at $DESKTOP_FILE with paths resolved"
     else
       echo "Desktop file is already up to date"
     fi
+    
+    # Clean up temporary file
+    rm -f "$TEMP_DESKTOP"
   else
     echo "Warning: Desktop file not found at $DESKTOP_SOURCE"
   fi

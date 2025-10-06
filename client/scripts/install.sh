@@ -97,7 +97,8 @@ if [[ "$OS" == "Linux" ]]; then
   mkdir -p "$(dirname "$DESKTOP_FILE")"
   
   if [ -f "$DESKTOP_SOURCE" ]; then
-    cp "$DESKTOP_SOURCE" "$DESKTOP_FILE"
+    # Replace placeholder with actual install directory path
+    sed "s|__INSTALL_DIR__|$INSTALL_DIR|g" "$DESKTOP_SOURCE" > "$DESKTOP_FILE"
     chmod +x "$DESKTOP_FILE"
     echo "Desktop file copied from $DESKTOP_SOURCE to $DESKTOP_FILE"
     echo "You can now launch Dashr from your application menu."

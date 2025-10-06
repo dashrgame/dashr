@@ -2,7 +2,7 @@
 Name=Dashr
 Comment=Dashr Client Application
 Exec=dashr
-Icon=$INSTALL_DIR/client/icons/current.png
+Icon=__INSTALL_DIR__/client/icons/current.png
 Terminal=false
 Type=Application
 Categories=Game;
