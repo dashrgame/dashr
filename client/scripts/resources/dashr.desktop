@@ -6,3 +6,5 @@ Icon=__INSTALL_DIR__/client/icons/current.png
 Terminal=false
 Type=Application
 Categories=Game;
+StartupNotify=true
+StartupWMClass=Dashr

@@ -17,8 +17,18 @@ pygame.init()
 
 # Set up display
 WIDTH, HEIGHT = 800, 480
+
+# Set window class name before creating the window
+os.environ['SDL_VIDEO_X11_WMCLASS'] = 'Dashr'
+
 screen = pygame.display.set_mode(size=(WIDTH, HEIGHT))
-pygame.display.set_caption("Dashr Demo" + (" [DEBUG]" if DEBUG else ""))
+pygame.display.set_caption("Dashr" + (" [DEBUG]" if DEBUG else ""))
+
+# Set window icon
+icon_path = os.path.join("client", "icons", "current.png")
+if os.path.exists(icon_path):
+    icon = pygame.image.load(icon_path).convert()
+    pygame.display.set_icon(icon)
 
 # Load font
 font_dir = os.path.join("client", "assets", "fonts", "default")
