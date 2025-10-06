@@ -12,8 +12,19 @@ confirm() {
   local prompt="$1"
   local var
   read -p "$prompt" var
-  [[ "$var" =~ ^[Yy]$ ]]
+  # Convert to lowercase and check for various positive responses
+  local response=$(echo "$var" | tr '[:upper:]' '[:lower:]')
+  [[ "$response" =~ ^(y|yes|yeah|yep|yup|ok|okay|sure|absolutely|definitely).*$ ]]
 }
+
+# Tell the user this script is deprecated
+echo "Warning: This update script is deprecated."
+echo "Please use the built-in auto-update feature in the Dashr application."
+echo "This script will still attempt to update your installation after the confirmation."
+if ! confirm "Do you want to proceed with the update script? (y/N): "; then
+  echo "Update cancelled."
+  exit 0
+fi
 
 # Check if Dashr is installed
 if [ ! -d "$INSTALL_DIR" ]; then

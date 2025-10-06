@@ -11,7 +11,9 @@ confirm() {
   local prompt="$1"
   local var
   read -p "$prompt" var
-  [[ "$var" =~ ^[Yy]$ ]]
+  # Convert to lowercase and check for various positive responses
+  local response=$(echo "$var" | tr '[:upper:]' '[:lower:]')
+  [[ "$response" =~ ^(y|yes|yeah|yep|yup|ok|okay|sure|absolutely|definitely).*$ ]]
 }
 
 # Check if Dashr is installed
