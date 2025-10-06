@@ -92,7 +92,7 @@ You can't explain that!
 if not ok then return end
 .party()!
 Python 3 + 0.13 + 0.00.3 = 3.13.3!
-Woah.
+Woah!
 Now with additional stuff!
 Extra things!
 Any computer is a laptop if you're brave enough!
@@ -100,7 +100,7 @@ Do it all, everything!
 Something's not quite right...
 All rumors are true!
 [insert something funny]!
-I need more context.
+I need more context!
 This is hard to read at the default resolution, but at 1080p its fine!
 Ahhhhhh!
 Don't worry, be happy!
@@ -216,7 +216,7 @@ Your warranty is void!
 Did you know: Gaming is fun!
 Fun fact: This is a game!
 Gameception!
-This splash text intentionally left blank.
+This splash text intentionally left blank!
 A perfectly normal message!
 Probably not cursed!
 Slightly above average!
@@ -251,50 +251,50 @@ Now trending on MySpace!
 Built different!
 No DLC required!
 New update available (mentally, at least)!
-Press X to feel clever.
+Press X to feel clever!
 Now with extra pixels!
-This is not a drill. It's a game.
-Bring snacks for optimal performance.
-Uninstall regret not included.
-Optimized for potato PCs.
-Temporarily stable.
-Frequently inconsistent.
-Now in color (maybe).
+This is not a drill. It's a game!
+Bring snacks for optimal performance!
+Uninstall regret not included!
+Optimized for potato PCs!
+Temporarily stable!
+Frequently inconsistent!
+Now in color (maybe)!
 Collect all the splashes!
-Beta-tested by friends and family.
-Feature: mild exhilaration.
-Includes a complimentary high five.
-Non-refundable fun.
-Please fasten your seatbelts.
+Beta-tested by friends and family!
+Feature: mild exhilaration!
+Includes a complimentary high five!
+Non-refundable fun!
+Please fasten your seatbelts!
 This text will self-destruct in 3... 2... 1...
-Local multiplayer: you vs. yourself.
-Guaranteed to slightly improve your day.
-May inspire spontaneous dancing.
+Local multiplayer: you vs. yourself!
+Guaranteed to slightly improve your day!
+May inspire spontaneous dancing!
 Minor visual improvements detected!
-Smiles per minute increased.
-Press any key, then press another.
-Works better when you believe.
-Unpatched since development.
-May contain tiny easter eggs.
-Not affiliated with reality.
-Glorious 2D pixels inside.
-Randomness calibrated.
-Shoes optional.
-Batteries may be required later.
-Please enjoy responsibly.
-Contains hidden compliments.
-Mildly enchanted.
-Requires occasional breaks.
-Now with improved ambiguity.
-Certified pixel-perfect(ish).
-Report bugs as stories.
+Smiles per minute increased!
+Press any key, then press another!
+Works better when you believe!
+Unpatched since development!
+May contain tiny easter eggs!
+Not affiliated with reality!
+Glorious 2D pixels inside!
+Randomness calibrated!
+Shoes optional!
+Batteries may be required later!
+Please enjoy responsibly!
+Contains hidden compliments!
+Mildly enchanted!
+Requires occasional breaks!
+amazing!!111!!11!1
+Certified pixel-perfect(ish)!
+Report bugs as stories!
 Thank you for playing!
 Now even more enjoyable!
 Extra sprinkles included!
 Polished to pixel perfection!
 Mildly triumphant!
 Statistically significant fun!
-Auto-save: probably.
-Please hydrate.
+Auto-save: probably!
+Please hydrate!
 Now with exclusive patch notes!
-This is where the plot twist happens.
+This is where the plot twist happens!
