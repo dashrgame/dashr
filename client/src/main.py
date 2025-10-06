@@ -289,7 +289,7 @@ class DashrGame:
 
 def main():
     should_always_restart = os.environ.get("DASHR_ALWAYS_RESTART", "false") == "true"
-    
+
     try:
         result = autoupdate.run_autoupdate()
 
@@ -298,6 +298,11 @@ def main():
             install_dir = os.path.expanduser("~/dashr")
             if os.path.exists(install_dir):
                 os.chdir(install_dir)
+
+            # If should_always_restart is true, reset for the next run
+            if should_always_restart:
+                os.environ["DASHR_ALWAYS_RESTART"] = "false"
+
             os.execv(sys.executable, [sys.executable, "-m", "client.src.main"])
     except Exception as e:
         print(f"Autoupdate error: {e}")
