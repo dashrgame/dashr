@@ -1,5 +1,4 @@
 import pygame
-from pygame.locals import *
 import os
 from collections import deque
 import time
@@ -13,7 +12,7 @@ from client.src.renderer.tile import render_tile
 DEBUG = os.getenv("DASHR_DEBUG", "false").lower() == "true"
 
 # Initialize pygame
-pygame.mixer.pre_init(44100, 16, 2, 4096)
+pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 
 # Set up display
