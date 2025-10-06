@@ -2,6 +2,7 @@ import os
 import time
 from collections import deque
 
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
 
 from client.src.asset.font.font_loader import FontLoader
@@ -10,45 +11,19 @@ from client.src.input.manager import InputManager
 from client.src.renderer.text import render_text
 from client.src.ui.page_manager import PageManager
 from client.src.ui.pages.title import Title
+from client.src.update.version import (
+    get_version_number_github,
+    get_version_number_local,
+)
+from client.src.constants import *
+import threading
 
 
 class DashrGame:
-    # Constants
-    DEFAULT_WIDTH = 800
-    DEFAULT_HEIGHT = 480
-    DEFAULT_UI_SCALE = 1
-    BACKGROUND_COLOR = (255, 255, 255)
-    DEBUG_BOX_COLOR = (255, 255, 255)
-    DEBUG_TEXT_COLOR = (0, 0, 0)
-
-    # Number key mappings for F5 combinations
-    NUMBER_KEY_MAP = {
-        pygame.K_0: "0",
-        pygame.K_1: "1",
-        pygame.K_2: "2",
-        pygame.K_3: "3",
-        pygame.K_4: "4",
-        pygame.K_5: "5",
-        pygame.K_6: "6",
-        pygame.K_7: "7",
-        pygame.K_8: "8",
-        pygame.K_9: "9",
-        pygame.K_KP0: "0",
-        pygame.K_KP1: "1",
-        pygame.K_KP2: "2",
-        pygame.K_KP3: "3",
-        pygame.K_KP4: "4",
-        pygame.K_KP5: "5",
-        pygame.K_KP6: "6",
-        pygame.K_KP7: "7",
-        pygame.K_KP8: "8",
-        pygame.K_KP9: "9",
-    }
-
     def __init__(self):
         self.debug = False
         self.running = False
-        self.ui_scale = self.DEFAULT_UI_SCALE
+        self.ui_scale = UI_SCALE
 
         # F5 combination state
         self.f5_number_buffer = ""
@@ -66,6 +41,28 @@ class DashrGame:
         # Game clock
         self.clock = pygame.time.Clock()
 
+        # Get version number
+        def get_versions():
+            try:
+                self.current_version = get_version_number_local(".")
+            except Exception as e:
+                print(f"Failed to get version number: {e}")
+                self.current_version = "unknown"
+
+            try:
+                self.upstream_version = get_version_number_github(UPSTREAM_REPO_URL)
+            except Exception as e:
+                print(f"Failed to get upstream version: {e}")
+                self.upstream_version = "unknown"
+
+        # Initialize versions to avoid attribute errors
+        self.current_version = "loading..."
+        self.upstream_version = "loading..."
+
+        # Start version check in background thread
+        version_thread = threading.Thread(target=get_versions, daemon=True)
+        version_thread.start()
+
     def _initialize_pygame(self):
         # Set window properties before initializing pygame
         os.environ["SDL_VIDEO_X11_WMCLASS"] = "Dashr"
@@ -76,8 +73,11 @@ class DashrGame:
         pygame.init()
 
         # Set up display
-        self.width, self.height = self.DEFAULT_WIDTH, self.DEFAULT_HEIGHT
-        self.screen = pygame.display.set_mode(size=(self.width, self.height))
+        self.width, self.height = DEFAULT_WIDTH, DEFAULT_HEIGHT
+        flags = pygame.FULLSCREEN if FULLSCREEN else 0
+        self.screen = pygame.display.set_mode(
+            size=(self.width, self.height), flags=flags
+        )
         pygame.display.set_caption("Dashr Demo")
 
         # Set window icon
@@ -123,7 +123,7 @@ class DashrGame:
         self.input_manager.on_key_release(pygame.K_F5, self._handle_f5_release)
 
     def _register_number_keys(self):
-        for number_key in self.NUMBER_KEY_MAP.keys():
+        for number_key in NUMBER_KEY_MAP.keys():
             self.input_manager.on_key_press(number_key, self._handle_number_key)
 
     def _handle_screenshot_key(self, key):
@@ -149,8 +149,8 @@ class DashrGame:
         self.f5_number_buffer = ""
 
     def _handle_number_key(self, key):
-        if self.f5_held and key in self.NUMBER_KEY_MAP:
-            self.f5_number_buffer += self.NUMBER_KEY_MAP[key]
+        if self.f5_held and key in NUMBER_KEY_MAP:
+            self.f5_number_buffer += NUMBER_KEY_MAP[key]
 
     def _take_screenshot(self):
         screenshots_dir = os.path.expanduser(
@@ -176,52 +176,67 @@ class DashrGame:
         while self.fps_history and current_time - self.fps_history[0][0] > 1.0:
             self.fps_history.popleft()
 
-    def _render_fps_debug(self):
-        if not self.debug or not self.fps_history:
+    def _render_debug(self):
+        if not self.debug:
             return
 
         current_fps = self.clock.get_fps()
         fps_values = [fps for _, fps in self.fps_history if fps > 0]
+
+        # Calculate text dimensions based on UI scale
+        line_height = 10 * self.ui_scale
+        char_width = 6 * self.ui_scale  # Approximate character width
+        margin = 5 * self.ui_scale
 
         if fps_values:
             avg_fps = sum(fps_values) / len(fps_values)
             min_fps = min(fps_values)
             max_fps = max(fps_values)
 
-            # Draw background box for multi-line stats
-            pygame.draw.rect(
-                self.screen, self.DEBUG_BOX_COLOR, (self.width - 75, 5, 70, 50)
-            )
-
-            # Render FPS statistics
+            # Prepare stats with version info
             stats = [
-                f"FPS: {current_fps:.1f}",
-                f"Avg: {avg_fps:.1f}",
-                f"Min: {min_fps:.1f}",
-                f"Max: {max_fps:.1f}",
+                f"- FPS: {current_fps:.1f}",
+                f"| Avg: {avg_fps:.1f}",
+                f"| Min: {min_fps:.1f}",
+                f"| Max: {max_fps:.1f}",
+                "",
+                f"- Ver: {self.current_version}",
+                f"| Up: {self.upstream_version}",
+            ]
+        else:
+            # Fallback stats when no FPS history
+            stats = [
+                f"- FPS: {current_fps:.1f}",
+                "",
+                f"- Ver: {self.current_version}",
+                f"| Up: {self.upstream_version}",
             ]
 
-            for i, stat in enumerate(stats):
-                render_text(
-                    self.screen,
-                    stat,
-                    self.font,
-                    (self.width - 65, 10 + i * 10),
-                    scale=self.ui_scale,
-                    color=self.DEBUG_TEXT_COLOR,
-                )
-        else:
-            # Single line FPS display
-            pygame.draw.rect(
-                self.screen, self.DEBUG_BOX_COLOR, (self.width - 130, 5, 125, 15)
-            )
+        # Calculate box dimensions based on content and scale
+        max_text_width = max(len(stat) for stat in stats) * char_width
+        box_width = max_text_width + (margin * 2)
+        box_height = len(stats) * line_height + (margin * 2)
+
+        # Position box in top-right corner with margin
+        box_x = self.width - box_width - margin
+        box_y = margin
+
+        # Draw background box
+        pygame.draw.rect(
+            self.screen, DEBUG_BOX_COLOR, (box_x, box_y, box_width, box_height)
+        )
+
+        # Render all statistics
+        for i, stat in enumerate(stats):
+            text_x = box_x + margin
+            text_y = box_y + margin + (i * line_height)
             render_text(
                 self.screen,
-                f"FPS: {current_fps:.1f}",
+                stat,
                 self.font,
-                (self.width - 120, 10),
+                (text_x, text_y),
                 scale=self.ui_scale,
-                color=self.DEBUG_TEXT_COLOR,
+                color=DEBUG_TEXT_COLOR,
             )
 
     def _handle_events(self):
@@ -235,7 +250,7 @@ class DashrGame:
 
     def _render(self):
         # Clear screen
-        self.screen.fill(self.BACKGROUND_COLOR)
+        self.screen.fill(BACKGROUND_COLOR)
 
         # Render current page
         self.page_manager.render_current_page(
@@ -243,7 +258,7 @@ class DashrGame:
         )
 
         # Render debug information
-        self._render_fps_debug()
+        self._render_debug()
 
         # Update display
         pygame.display.flip()
