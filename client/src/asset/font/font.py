@@ -1,16 +1,21 @@
 from PIL import Image
 
 from client.src.asset.font.character import FontCharacter
+from client.src.asset.font.icon import IconCharacter
 
 
 class Font:
-    def __init__(self, size: int, characters: dict[str, FontCharacter]):
+    def __init__(self, size: int, characters: dict[str, FontCharacter], icons: dict[str, IconCharacter]):
         self.size = size
         self.characters = characters  # Mapping from character to its FontCharacter
+        self.icons = icons # Mapping from icon ID to its IconCharacter
 
     def get_character_image(self, char: str) -> Image.Image | None:
         font_char = self.characters.get(char)
         return font_char.get_image() if font_char else None
+    
+    def get_icon(self, icon_id: str) -> IconCharacter | None:
+        return self.icons.get(icon_id)
 
     def get_text_width(self, text: str, ui_scale: float) -> float:
         if not text:
@@ -20,19 +25,34 @@ class Font:
         spacing = 1.0 * ui_scale
         extra_spacing = 3.0 * ui_scale
 
-        for i, char in enumerate(text):
-            if char == " ":
+        i = 0
+        while i < len(text):
+            # Check for icon syntax
+            if text[i:i+6] == "<icon:" and ">" in text[i+6:]:
+                end_pos = text.find(">", i+6)
+                
+                total_width += self.size * ui_scale
+                
+                # Add spacing after icon if not the last element
+                if end_pos + 1 < len(text):
+                    total_width += spacing
+                
+                i = end_pos + 1
+            elif text[i] == " ":
                 total_width += extra_spacing
-            elif char in self.characters:
-                char_width = self.characters[char].get_width(ui_scale)
+                i += 1
+            elif text[i] in self.characters:
+                char_width = self.characters[text[i]].get_width(ui_scale)
                 total_width += char_width
                 # Add spacing after each character except the last one
                 if i < len(text) - 1:
                     total_width += spacing
+                i += 1
             else:
                 # Missing glyph - use font size as fallback width
                 total_width += self.size * ui_scale
                 if i < len(text) - 1:
                     total_width += spacing
+                i += 1
 
         return total_width
