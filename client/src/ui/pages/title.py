@@ -1,12 +1,15 @@
 import pygame
 import math
 import time
+import os
 
 from client.src.utils.splash_picker import pick_a_splash_any_splash, get_specific_splash
 from client.src.renderer.text import render_text
 from client.src.asset.font.font import Font
 from client.src.asset.tile.tile import AssetTile
 from client.src.ui.page import Page
+from client.src.ui.shared.blur_and_darken import apply_blur_and_darken
+from client.src.ui.shared.parallax import create_parallax_surface
 from client.src.constants import *
 
 
@@ -17,6 +20,11 @@ class Title(Page):
         self.splash: str = pick_a_splash_any_splash()
         self.no_splash_effect = no_splash_effect
         self.animation_start_time = time.time()
+
+        # Load the parallax background image
+        self.background_image = pygame.image.load(
+            os.path.join("client", "assets", "ui", "backgrounds", "title_bg.png")
+        ).convert()
 
     def refresh_splash(self):
         self.splash = pick_a_splash_any_splash()
@@ -31,12 +39,29 @@ class Title(Page):
         screen: pygame.Surface,
         font: Font,
         loaded_tiles: dict[str, AssetTile],
+        cursor_pos: tuple[int, int],
         ui_scale: int,
     ):
         screen.fill((0, 0, 0))
 
         screen_width = screen.get_width()
         screen_height = screen.get_height()
+
+        # Draw parallax background
+        parallax_surface = create_parallax_surface(
+            surface=self.background_image,
+            screen_size=(screen_width, screen_height),
+            cursor_pos=cursor_pos,
+            parallax_strength=PARALLAX_STRENGTH,
+        )
+
+        blurred_background = apply_blur_and_darken(
+            surface=parallax_surface,
+            blur_strength=BLUR_STRENGTH,
+            darken_strength=DARKEN_STRENGTH,
+        )
+
+        screen.blit(blurred_background, (0, 0))
 
         # Calculate text dimensions for proper centering
         title_scale = ui_scale * TITLE_EXTRA_SCALE
@@ -50,8 +75,12 @@ class Title(Page):
             current_time = time.time()
             elapsed = current_time - self.animation_start_time
             # Use sine wave for smooth animation, complete cycle every SPLASH_ANIMATION_SPEED seconds
-            animation_progress = (math.sin(elapsed * math.pi / SPLASH_ANIMATION_SPEED) + 1) / 2  # 0 to 1
-            splash_scale = (ui_scale * SPLASH_MIN) + (ui_scale * (SPLASH_MAX - SPLASH_MIN) * animation_progress)
+            animation_progress = (
+                math.sin(elapsed * math.pi / SPLASH_ANIMATION_SPEED) + 1
+            ) / 2  # 0 to 1
+            splash_scale = (ui_scale * SPLASH_MIN) + (
+                ui_scale * (SPLASH_MAX - SPLASH_MIN) * animation_progress
+            )
 
         # Render title - centered horizontally and positioned at 1/10 screen height
         title_text = "<icon:logo> Dashr"

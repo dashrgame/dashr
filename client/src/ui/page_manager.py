@@ -30,7 +30,8 @@ class PageManager:
         screen: pygame.Surface,
         font: Font,
         loaded_tiles: dict[str, AssetTile],
+        cursor_pos: tuple[int, int],
         ui_scale: int,
     ):
         if self.current_page:
-            self.current_page.render(screen, font, loaded_tiles, ui_scale)
+            self.current_page.render(screen, font, loaded_tiles, cursor_pos, ui_scale)

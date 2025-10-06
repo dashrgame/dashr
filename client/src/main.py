@@ -34,6 +34,9 @@ class DashrGame:
         # FPS tracking
         self.fps_history = deque()
 
+        # Cursor position
+        self.cursor_pos = (0, 0)
+
         # Initialize pygame and create components
         self._initialize_pygame()
         self._load_assets()
@@ -241,11 +244,18 @@ class DashrGame:
                 color=DEBUG_TEXT_COLOR,
             )
 
+    def _handle_event(self, event):
+        if event.type == pygame.MOUSEMOTION:
+            self.cursor_pos = event.pos
+
+        self.input_manager.handle_event(event)
+
     def _handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            self.input_manager.handle_event(event)
+
+            self._handle_event(event)
 
     def _update(self):
         self._update_fps_tracking()
@@ -256,7 +266,7 @@ class DashrGame:
 
         # Render current page
         self.page_manager.render_current_page(
-            self.screen, self.font, self.loaded_tiles, self.ui_scale
+            self.screen, self.font, self.loaded_tiles, self.cursor_pos, self.ui_scale
         )
 
         # Render debug information

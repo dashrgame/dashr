@@ -13,6 +13,7 @@ class Page:
         screen: pygame.Surface,
         font: Font,
         loaded_tiles: dict[str, AssetTile],
+        cursor_pos: tuple[int, int],
         ui_scale: int,
     ):
         pass
