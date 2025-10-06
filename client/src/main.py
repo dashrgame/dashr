@@ -1,6 +1,8 @@
 import os
+import sys
 import time
 from collections import deque
+import threading
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
@@ -15,8 +17,8 @@ from client.src.update.version import (
     get_version_number_github,
     get_version_number_local,
 )
+from client.src.update import autoupdate
 from client.src.constants import *
-import threading
 
 
 class DashrGame:
@@ -286,6 +288,15 @@ class DashrGame:
 
 
 def main():
+    try:
+        result = autoupdate.run_autoupdate()
+
+        if result:
+            print("Restarting application to apply updates...")
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+    except Exception as e:
+        print(f"Autoupdate error: {e}")
+
     game = DashrGame()
     game.run()
 
