@@ -1,4 +1,19 @@
 import pygame
+from collections import OrderedDict
+import hashlib
+
+
+_PARALLAX_CACHE_MAXSIZE = 64
+_parallax_cache = OrderedDict()
+
+
+def clear_parallax_cache() -> None:
+    _parallax_cache.clear()
+
+
+def _surface_hash(surface: pygame.Surface) -> bytes:
+    raw = pygame.image.tostring(surface, "RGBA")
+    return hashlib.sha1(raw).digest()
 
 
 def create_parallax_surface(
@@ -29,6 +44,33 @@ def create_parallax_surface(
     start_x = max_offset_x + offset_x
     start_y = max_offset_y + offset_y
 
+    # Try to use cache. Key is surface content hash + sizes + cursor + strength
+    try:
+        key = (
+            _surface_hash(surface),
+            surface.get_size(),
+            screen_size,
+            int(cursor_x),
+            int(cursor_y),
+            float(parallax_strength),
+        )
+    except Exception:
+        # Worst-case fallback to id-based key
+        key = (
+            id(surface),
+            surface.get_size(),
+            screen_size,
+            int(cursor_x),
+            int(cursor_y),
+            float(parallax_strength),
+        )
+
+    cached = _parallax_cache.get(key)
+    if cached is not None:
+        # Move to end to mark as recently used
+        _parallax_cache.move_to_end(key)
+        return cached.copy()
+
     # Create a new surface with black background
     result_surface = pygame.Surface(screen_size)
     result_surface.fill((0, 0, 0))  # Black background
@@ -52,4 +94,10 @@ def create_parallax_surface(
     if source_rect.width > 0 and source_rect.height > 0:
         result_surface.blit(surface, (blit_x, blit_y), source_rect)
 
-    return result_surface
+    # Cache a copy and enforce LRU max size
+    cache_value = result_surface.copy()
+    _parallax_cache[key] = cache_value
+    if len(_parallax_cache) > _PARALLAX_CACHE_MAXSIZE:
+        _parallax_cache.popitem(last=False)
+
+    return cache_value.copy()

@@ -1,13 +1,50 @@
 import pygame
 from PIL import Image, ImageFilter
 import numpy as np
+from collections import OrderedDict
+import hashlib
+
+
+_BLUR_CACHE_MAXSIZE = 32
+_blur_cache = OrderedDict()
+
+
+def clear_blur_cache() -> None:
+    _blur_cache.clear()
+
+
+def _surface_hash(surface: pygame.Surface) -> bytes:
+    raw = pygame.image.tostring(surface, "RGBA")
+    return hashlib.sha1(raw).digest()
 
 
 def apply_blur_and_darken(
     surface: pygame.Surface, blur_strength: float = 2.0, darken_strength: float = 0.5
 ):
+    # Fast-path: nothing to do
     if blur_strength <= 0 and darken_strength <= 0:
         return surface.copy()
+
+    # Build cache key from pixel content + params
+    try:
+        key = (
+            _surface_hash(surface),
+            float(blur_strength),
+            float(darken_strength),
+            surface.get_size(),
+        )
+    except Exception:
+        key = (
+            id(surface),
+            float(blur_strength),
+            float(darken_strength),
+            surface.get_size(),
+        )
+
+    cached = _blur_cache.get(key)
+    if cached is not None:
+        _blur_cache.move_to_end(key)
+        return cached.copy()
 
     # Convert pygame surface to PIL Image
     surface_array = pygame.surfarray.array3d(surface)
@@ -49,4 +86,9 @@ def apply_blur_and_darken(
     else:
         result_surface = result_surface.convert()
 
-    return result_surface
+    cache_value = result_surface.copy()
+    _blur_cache[key] = cache_value
+    if len(_blur_cache) > _BLUR_CACHE_MAXSIZE:
+        _blur_cache.popitem(last=False)
+
+    return cache_value.copy()
