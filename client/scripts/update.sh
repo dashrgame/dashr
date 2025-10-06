@@ -41,6 +41,21 @@ else
   echo "No user data found at $USER_DATA_DIR"
 fi
 
+# Revert any local changes
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Warning: You have local changes in the repository."
+  if confirm "Do you want to discard local changes and continue? (y/N): "; then
+    git reset --hard
+    echo "Local changes discarded."
+  else
+    echo "Update aborted to preserve local changes."
+    exit 1
+  fi
+fi
+
+# Ensure we're on the main branch
+git checkout main
+
 # Fetch and pull latest changes
 echo "Fetching latest updates from repository..."
 git fetch origin
