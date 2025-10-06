@@ -47,11 +47,11 @@ class Title(Page):
             animation_progress = (math.sin(elapsed * math.pi) + 1) / 2  # 0 to 1
             splash_scale = ui_scale * 2 + (ui_scale * animation_progress)
 
-        # Render title - centered horizontally and positioned at 1/8 screen height
+        # Render title - centered horizontally and positioned at 1/10 screen height
         title_text = "Dashr"
         title_color = (255, 255, 255)
         title_width = int(font.get_text_width(title_text, title_scale))
-        title_position = (screen_width // 2 - title_width // 2, screen_height // 8)
+        title_position = (screen_width // 2 - title_width // 2, screen_height // 10)
         render_text(screen, title_text, font, title_position, title_scale, title_color)
 
         # Render subtitle - centered below title with proper spacing
