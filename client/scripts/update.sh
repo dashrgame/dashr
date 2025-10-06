@@ -45,6 +45,8 @@ fi
 if [ -n "$(git status --porcelain)" ]; then
   echo "Stashing local changes..."
   git stash push -m "Auto-stash before update on $(date)"
+else
+  echo "No local changes to stash."
 fi
 
 # Ensure we're on the main branch
