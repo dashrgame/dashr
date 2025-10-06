@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 import os
 from collections import deque
 import time
@@ -12,11 +13,12 @@ from client.src.renderer.tile import render_tile
 DEBUG = os.getenv("DASHR_DEBUG", "false").lower() == "true"
 
 # Initialize pygame
+pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 
 # Set up display
 WIDTH, HEIGHT = 800, 480
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode(size=(WIDTH, HEIGHT))
 pygame.display.set_caption("Dashr Demo" + (" [DEBUG]" if DEBUG else ""))
 
 # Load font
