@@ -41,22 +41,10 @@ else
   echo "No user data found at $USER_DATA_DIR"
 fi
 
-# Revert any local changes
-if [ -n "$(git status --porcelain)" ] || [ -n "$(git ls-files --others --exclude-standard)" ]; then
-  # Ensure HEAD is referenced explicitly
-  git fetch --quiet
-  git reset --hard HEAD
-
-  # Remove untracked files and directories, and ignored files (-x)
-  git clean -fd
-
-  # If repository uses submodules, force-reset and clean each one as well
-  if [ -f .gitmodules ]; then
-    git submodule foreach --recursive 'git reset --hard HEAD || true; git clean -fdx || true'
-  fi
-  echo "Repository fully reset to last commit (untracked/ignored files removed)."
-else
-  echo "No local changes detected."
+# Stash any local changes
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Stashing local changes..."
+  git stash push -m "Auto-stash before update on $(date)"
 fi
 
 # Ensure we're on the main branch
