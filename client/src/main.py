@@ -19,7 +19,7 @@ pygame.init()
 WIDTH, HEIGHT = 800, 480
 
 # Set window class name before creating the window
-os.environ['SDL_VIDEO_X11_WMCLASS'] = 'Dashr'
+os.environ["SDL_VIDEO_X11_WMCLASS"] = "Dashr"
 
 screen = pygame.display.set_mode(size=(WIDTH, HEIGHT))
 pygame.display.set_caption("Dashr" + (" [DEBUG]" if DEBUG else ""))
