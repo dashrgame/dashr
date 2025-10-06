@@ -64,7 +64,7 @@ class Title(Page):
         subtitle_text = "Demo Edition"
         subtitle_color = SUBTITLE_COLOR
         subtitle_width = int(font.get_text_width(subtitle_text, subtitle_scale))
-        subtitle_y = title_position[1] + (font.size * title_scale) + (10 * ui_scale)
+        subtitle_y = title_position[1] + (font.size * title_scale) + (15 * ui_scale)
         subtitle_position = (screen_width // 2 - subtitle_width // 2, subtitle_y)
         render_text(
             screen,
