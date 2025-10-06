@@ -34,7 +34,7 @@ if os.path.exists(icon_path):
     pygame.display.set_icon(icon)
 
 # Load font
-font_dir = os.path.join("client", "assets", "fonts", "default")
+font_dir = os.path.join("client", "assets", "font")
 font = FontLoader.load_font_from_directory(font_dir)
 
 # Load tiles

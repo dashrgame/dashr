@@ -119,7 +119,7 @@ Two-tier configuration:
 Always use `os.path.join()` for cross-platform compatibility:
 
 ```python
-font_dir = os.path.join("client", "assets", "fonts", "default")
+font_dir = os.path.join("client", "assets", "font")
 ```
 
 ### Asset Loading
