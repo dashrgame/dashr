@@ -160,22 +160,58 @@ Please restart your computer!
 Have you tried turning it off and on again?!
 Loading... please wait!
 Connection timeout!
-Segmentation fault (core dumped)!
-Stack overflow detected!
-Memory leak plugged!
-Race condition avoided!
-Deadlock resolved!
-Null pointer exception caught!
-Buffer overflow prevented!
-DDOS attack deflected!
 Firewall engaged!
 Antivirus approved!
-Malware-free since 2025!
+Malware-free since 2047!
 Quantum computing ready!
-Metaverse compatible!
-VR supported!
-AR enabled!
-IoT connected!
-5G accelerated!
-Decentralized gaming!
 Gas fees not included!
+Hodl your horses!
+To the moon!
+Definitely not financial advice!
+This is the way!
+Touch grass simulator!
+It hits different!
+Monke see, monke play!
+Return to pixels!
+Dopamine hit guaranteed!
+Certified banger!
+Toxicity-free environment!
+Positive vibes only!
+Glitch in the matrix fixed!
+Over 9000 references!
+Much game very play!
+Stonks only go up!
+Number go up good!
+Monkey brain satisfied!
+Banana for scale included!
+Cat videos recommended!
+Dog pics appreciated!
+Birb sounds enabled!
+Existence is pain... in a fun way!
+I'm not okay, but this game is!
+Everything is fine!
+Stonks man approves!
+Task failed successfully!
+Suffering from success!
+Outstanding move!
+Modern problems, modern solutions!
+Wait, that's illegal!
+Perfectly balanced, as all things should be!
+I see this as an absolute win!
+Reality is often disappointing... but not here!
+You couldn't live with your failure!
+I used the games to play the games!
+Fine, I'll do it myself!
+Avengers... assemble your keyboards!
+I am inevitable... ly going to play this!
+And I... am... Iron Gamer!
+With great power comes great gaming!
+Bottom text!
+Can we hit 50 likes?!
+Smash that like button!
+Don't forget to subscribe!
+Read more!
+Terms and conditions apply!
+Your warranty is void!
+Did you know: Gaming is fun!
+Fun fact: This is a game!
