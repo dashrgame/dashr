@@ -96,6 +96,8 @@ if [[ "$OS" == "Linux" ]]; then
     if [ ! -f "$DESKTOP_FILE" ] || ! cmp -s "$TEMP_DESKTOP" "$DESKTOP_FILE"; then
       cp "$TEMP_DESKTOP" "$DESKTOP_FILE"
       chmod +x "$DESKTOP_FILE"
+      update-desktop-database "$HOME/.local/share/applications" || true
+      
       echo "Desktop file updated at $DESKTOP_FILE with paths resolved"
     else
       echo "Desktop file is already up to date"

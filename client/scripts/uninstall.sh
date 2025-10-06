@@ -92,6 +92,8 @@ if [[ "$OS" == "Linux" ]]; then
   DESKTOP_FILE="$HOME/.local/share/applications/dashr.desktop"
   if [ -f "$DESKTOP_FILE" ]; then
     rm -f "$DESKTOP_FILE"
+    update-desktop-database "$HOME/.local/share/applications" || true
+    
     echo "Desktop file removed."
   else
     echo "Desktop file not found (already removed or not installed)."
