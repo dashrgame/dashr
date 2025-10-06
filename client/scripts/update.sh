@@ -48,7 +48,7 @@ if [ -n "$(git status --porcelain)" ] || [ -n "$(git ls-files --others --exclude
   git reset --hard HEAD
 
   # Remove untracked files and directories, and ignored files (-x)
-  git clean -fdx
+  git clean -fd
 
   # If repository uses submodules, force-reset and clean each one as well
   if [ -f .gitmodules ]; then
