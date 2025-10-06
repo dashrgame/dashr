@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Dashr
 Comment=Dashr Client Application
-Exec=dashr
+Exec=env SDL_VIDEO_X11_WMCLASS=Dashr dashr
 Icon=__INSTALL_DIR__/client/icons/current.png
 Terminal=false
 Type=Application

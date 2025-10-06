@@ -11,16 +11,16 @@ from client.src.renderer.tile import render_tile
 # Debug flag
 DEBUG = os.getenv("DASHR_DEBUG", "false").lower() == "true"
 
+# Set window properties before initializing pygame
+os.environ["SDL_VIDEO_X11_WMCLASS"] = "Dashr"
+os.environ["SDL_VIDEO_WINDOW_POS"] = "SDL_WINDOWPOS_CENTERED"
+
 # Initialize pygame
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 
 # Set up display
 WIDTH, HEIGHT = 800, 480
-
-# Set window class name before creating the window
-os.environ["SDL_VIDEO_X11_WMCLASS"] = "Dashr"
-
 screen = pygame.display.set_mode(size=(WIDTH, HEIGHT))
 pygame.display.set_caption("Dashr" + (" [DEBUG]" if DEBUG else ""))
 
