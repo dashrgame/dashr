@@ -14,7 +14,7 @@ class FontCharacter:
     def get_size(self) -> tuple[int, int]:
         return self.size
 
-    def get_width(self, ui_scale: int) -> int:
+    def get_width(self, ui_scale: float) -> float:
         # Find the leftmost and rightmost non-transparent pixels
         left_bound = self.size[0]
         right_bound = -1
@@ -34,8 +34,10 @@ class FontCharacter:
                     left_bound = min(left_bound, x)
                     right_bound = max(right_bound, x)
 
-        # If no non-transparent pixels found, return 0
+        # If no non-transparent pixels found, return scaled full width
         if right_bound == -1:
-            return self.image.width
+            return self.image.width * ui_scale
 
-        return ((right_bound - left_bound + 1) + 1) * ui_scale  # Add 1 pixel for spacing
+        # Calculate actual character width and scale it (keep as float for precision)
+        actual_width = right_bound - left_bound + 1
+        return actual_width * ui_scale
