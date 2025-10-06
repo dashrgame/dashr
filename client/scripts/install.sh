@@ -92,19 +92,19 @@ echo "Detected OS: $OS"
 
 if [[ "$OS" == "Linux" ]]; then
   DESKTOP_FILE="$HOME/.local/share/applications/dashr.desktop"
+  DESKTOP_SOURCE="$INSTALL_DIR/client/scripts/resources/dashr.desktop"
+  
   mkdir -p "$(dirname "$DESKTOP_FILE")"
-  cat > "$DESKTOP_FILE" <<EOL
-[Desktop Entry]
-Name=Dashr
-Comment=Dashr Client Application
-Exec=dashr
-Icon=$INSTALL_DIR/images/logo.png
-Terminal=false
-Type=Application
-Categories=Game;
-EOL
-  chmod +x "$DESKTOP_FILE"
-  echo "You can now launch Dashr from your application menu."
+  
+  if [ -f "$DESKTOP_SOURCE" ]; then
+    cp "$DESKTOP_SOURCE" "$DESKTOP_FILE"
+    chmod +x "$DESKTOP_FILE"
+    echo "Desktop file copied from $DESKTOP_SOURCE to $DESKTOP_FILE"
+    echo "You can now launch Dashr from your application menu."
+  else
+    echo "Warning: Desktop file not found at $DESKTOP_SOURCE"
+  fi
+  
   echo "Alternatively, you can run Dashr from any terminal using: dashr"
 elif [[ "$OS" == "Darwin" ]]; then
   echo "For macOS, you can run Dashr using the terminal:"

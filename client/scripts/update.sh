@@ -79,6 +79,28 @@ else
 fi
 
 
+# Update desktop file on Linux
+OS=$(uname -s)
+if [[ "$OS" == "Linux" ]]; then
+  DESKTOP_FILE="$HOME/.local/share/applications/dashr.desktop"
+  DESKTOP_SOURCE="$INSTALL_DIR/client/scripts/resources/dashr.desktop"
+  
+  if [ -f "$DESKTOP_SOURCE" ]; then
+    mkdir -p "$(dirname "$DESKTOP_FILE")"
+    
+    # Only copy if files are different or destination doesn't exist
+    if [ ! -f "$DESKTOP_FILE" ] || ! cmp -s "$DESKTOP_SOURCE" "$DESKTOP_FILE"; then
+      cp "$DESKTOP_SOURCE" "$DESKTOP_FILE"
+      chmod +x "$DESKTOP_FILE"
+      echo "Desktop file updated at $DESKTOP_FILE"
+    else
+      echo "Desktop file is already up to date"
+    fi
+  else
+    echo "Warning: Desktop file not found at $DESKTOP_SOURCE"
+  fi
+fi
+
 echo ""
 echo "Dashr has been successfully updated!"
 echo "You can run it using: dashr"
