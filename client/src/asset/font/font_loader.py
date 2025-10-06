@@ -4,13 +4,12 @@ import json
 
 from client.src.asset.font.character import FontCharacter
 from client.src.asset.font.font import Font
+from client.src.asset.font.icon import IconCharacter
 
 
 class FontLoader:
     @staticmethod
     def load_font_from_directory(directory: str) -> Font:
-        characters = {}
-
         # Find font.json
         font_json_path = os.path.join(directory, "font.json")
         if not os.path.isfile(font_json_path):
@@ -82,6 +81,17 @@ class FontLoader:
             char_image = font_image.crop((left, upper, right, lower))
             characters[char] = FontCharacter(char, char_image)
 
-        font = Font(size=size, characters=characters)
+        # Load icons (icons/*.png images)
+        icons_dir = os.path.join(directory, "icons")
+        icons: dict[str, IconCharacter] = {}
+        if os.path.isdir(icons_dir):
+            for filename in os.listdir(icons_dir):
+                if filename.lower().endswith(".png"):
+                    icon_id = os.path.splitext(filename)[0]
+                    icon_path = os.path.join(icons_dir, filename)
+                    icon_image = Image.open(icon_path).convert("RGBA")
+                    icons[icon_id] = IconCharacter(icon_id, icon_image)
+
+        font = Font(size=size, characters=characters, icons=icons)
 
         return font

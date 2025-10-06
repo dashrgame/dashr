@@ -54,7 +54,7 @@ class Title(Page):
             splash_scale = (ui_scale * SPLASH_MIN) + (ui_scale * (SPLASH_MAX - SPLASH_MIN) * animation_progress)
 
         # Render title - centered horizontally and positioned at 1/10 screen height
-        title_text = "Dashr"
+        title_text = "<icon:logo> Dashr"
         title_color = TITLE_COLOR
         title_width = int(font.get_text_width(title_text, title_scale))
         title_position = (screen_width // 2 - title_width // 2, screen_height // 10)
@@ -64,7 +64,7 @@ class Title(Page):
         subtitle_text = "Demo Edition"
         subtitle_color = SUBTITLE_COLOR
         subtitle_width = int(font.get_text_width(subtitle_text, subtitle_scale))
-        subtitle_y = title_position[1] + (font.size * title_scale) + ui_scale
+        subtitle_y = title_position[1] + (font.size * title_scale) + (10 * ui_scale)
         subtitle_position = (screen_width // 2 - subtitle_width // 2, subtitle_y)
         render_text(
             screen,
