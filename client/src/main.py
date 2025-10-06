@@ -293,6 +293,10 @@ def main():
 
         if result:
             print("Restarting application to apply updates...")
+            # Change to installation directory before restarting
+            install_dir = os.path.expanduser("~/dashr")
+            if os.path.exists(install_dir):
+                os.chdir(install_dir)
             os.execv(sys.executable, [sys.executable] + sys.argv)
     except Exception as e:
         print(f"Autoupdate error: {e}")
