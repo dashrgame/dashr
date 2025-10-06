@@ -50,11 +50,90 @@ page_manager.set_page(title_page)
 input_manager = InputManager()
 input_manager.start()
 
+# F5 + number combination state
+f5_number_buffer = ""
+f5_held = False
+
+
+def handle_f5_press(key):
+    global f5_held
+    f5_held = True
+
+
+def handle_f5_release(key):
+    global f5_held, f5_number_buffer
+    if f5_held and f5_number_buffer:
+        try:
+            line_number = int(f5_number_buffer)
+            title_page.set_specific_splash(line_number)
+        except ValueError:
+            pass  # Invalid number, ignore
+    f5_held = False
+    f5_number_buffer = ""
+
+
+def handle_number_key(key):
+    global f5_held, f5_number_buffer
+    if f5_held:
+        # Map pygame key codes to numbers
+        number_map = {
+            pygame.K_0: "0",
+            pygame.K_1: "1",
+            pygame.K_2: "2",
+            pygame.K_3: "3",
+            pygame.K_4: "4",
+            pygame.K_5: "5",
+            pygame.K_6: "6",
+            pygame.K_7: "7",
+            pygame.K_8: "8",
+            pygame.K_9: "9",
+            pygame.K_KP0: "0",
+            pygame.K_KP1: "1",
+            pygame.K_KP2: "2",
+            pygame.K_KP3: "3",
+            pygame.K_KP4: "4",
+            pygame.K_KP5: "5",
+            pygame.K_KP6: "6",
+            pygame.K_KP7: "7",
+            pygame.K_KP8: "8",
+            pygame.K_KP9: "9",
+        }
+        if key in number_map:
+            f5_number_buffer += number_map[key]
+
+
 input_manager.on_key_press(
     pygame.K_ESCAPE, lambda key: pygame.event.post(pygame.event.Event(pygame.QUIT))
 )
 input_manager.on_key_press(pygame.K_F3, lambda key: globals().update(debug=not debug))
 input_manager.on_key_press(pygame.K_F4, lambda key: title_page.refresh_splash())
+input_manager.on_key_press(pygame.K_F5, handle_f5_press)
+input_manager.on_key_release(pygame.K_F5, handle_f5_release)
+
+# Register number key handlers
+for number_key in [
+    pygame.K_0,
+    pygame.K_1,
+    pygame.K_2,
+    pygame.K_3,
+    pygame.K_4,
+    pygame.K_5,
+    pygame.K_6,
+    pygame.K_7,
+    pygame.K_8,
+    pygame.K_9,
+    pygame.K_KP0,
+    pygame.K_KP1,
+    pygame.K_KP2,
+    pygame.K_KP3,
+    pygame.K_KP4,
+    pygame.K_KP5,
+    pygame.K_KP6,
+    pygame.K_KP7,
+    pygame.K_KP8,
+    pygame.K_KP9,
+]:
+    input_manager.on_key_press(number_key, handle_number_key)
 
 # Clock for FPS
 clock = pygame.time.Clock()

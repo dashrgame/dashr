@@ -2,7 +2,7 @@ import pygame
 import math
 import time
 
-from client.src.utils.splash_picker import pick_a_splash_any_splash
+from client.src.utils.splash_picker import pick_a_splash_any_splash, get_specific_splash
 from client.src.renderer.text import render_text
 from client.src.asset.font.font import Font
 from client.src.asset.tile.tile import AssetTile
@@ -19,6 +19,11 @@ class Title(Page):
 
     def refresh_splash(self):
         self.splash = pick_a_splash_any_splash()
+
+    def set_specific_splash(self, line_number: int):
+        splash = get_specific_splash(line_number)
+        if splash is not None:
+            self.splash = splash
 
     def render(
         self,
