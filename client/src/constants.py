@@ -25,13 +25,8 @@ SPLASH_MAX = 2.5
 SPLASH_ANIMATION_SPEED = 1.0  # seconds for a full cycle
 
 TITLE_COLOR = (255, 255, 255)
-SUBTITLE_COLOR = (200, 200, 200)
+SUBTITLE_COLOR = (50, 58, 50)
 SPLASH_COLOR = (255, 215, 0)
-
-# Parallax/Title background config
-PARALLAX_STRENGTH = 0.05
-BLUR_STRENGTH = 1
-DARKEN_STRENGTH = 0.3
 
 # Number key mappings for F5 combinations
 NUMBER_KEY_MAP = {
