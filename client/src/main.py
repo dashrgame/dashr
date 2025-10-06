@@ -102,9 +102,24 @@ def handle_number_key(key):
             f5_number_buffer += number_map[key]
 
 
+def handle_screenshot(surface: pygame.Surface):
+    screenshots_dir = os.path.expanduser(os.path.join("~", "dashr-data", "screenshots"))
+    os.makedirs(screenshots_dir, exist_ok=True)
+
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    screenshot_path = os.path.join(screenshots_dir, f"screenshot_{timestamp}.png")
+
+    try:
+        pygame.image.save(surface, screenshot_path)
+        print(f"Screenshot saved to {screenshot_path}")
+    except Exception as e:
+        print(f"Failed to save screenshot: {e}")
+
+
 input_manager.on_key_press(
     pygame.K_ESCAPE, lambda key: pygame.event.post(pygame.event.Event(pygame.QUIT))
 )
+input_manager.on_key_press(pygame.K_F2, lambda key: handle_screenshot(screen))
 input_manager.on_key_press(pygame.K_F3, lambda key: globals().update(debug=not debug))
 input_manager.on_key_press(pygame.K_F4, lambda key: title_page.refresh_splash())
 input_manager.on_key_press(pygame.K_F5, handle_f5_press)
