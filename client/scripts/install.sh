@@ -100,6 +100,8 @@ if [[ "$OS" == "Linux" ]]; then
     # Replace placeholder with actual install directory path
     sed "s|__INSTALL_DIR__|$INSTALL_DIR|g" "$DESKTOP_SOURCE" > "$DESKTOP_FILE"
     chmod +x "$DESKTOP_FILE"
+    update-desktop-database "$HOME/.local/share/applications" || true
+    
     echo "Desktop file copied from $DESKTOP_SOURCE to $DESKTOP_FILE"
     echo "You can now launch Dashr from your application menu."
   else
