@@ -49,12 +49,14 @@ if [ -n "$(git status --porcelain)" ] || [ -n "$(git ls-files --others --exclude
 
   # Remove untracked files and directories, and ignored files (-x)
   git clean -fdx
-  
+
   # If repository uses submodules, force-reset and clean each one as well
   if [ -f .gitmodules ]; then
     git submodule foreach --recursive 'git reset --hard HEAD || true; git clean -fdx || true'
   fi
   echo "Repository fully reset to last commit (untracked/ignored files removed)."
+else
+  echo "No local changes detected."
 fi
 
 # Ensure we're on the main branch
