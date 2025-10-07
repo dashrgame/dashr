@@ -220,7 +220,7 @@ This splash text intentionally left blank!
 A perfectly normal message!
 Probably not cursed!
 Slightly above average!
-You wouldn’t download a splash!
+You wouldn't download a splash!
 Insert coin to continue!
 01010100 01101000 01101001 01110011 00100001
 Read the fine print!
@@ -242,10 +242,10 @@ Insert witty reference here!
 I understood that reference!
 To infinity and beyond!
 Are you even reading these?
-You’re wasting valuable milliseconds!
+You're wasting valuable milliseconds!
 Does anyone even see these?
 The developer is watching...
-Blink twice if you’re reading this!
+Blink twice if you're reading this!
 Probably seen on Reddit!
 Now trending on MySpace!
 Built different!

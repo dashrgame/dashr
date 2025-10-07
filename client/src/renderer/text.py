@@ -101,7 +101,7 @@ def render_text(
                 # Draw "tofu"
                 pygame.draw.rect(
                     py_img,
-                    (0, 0, 0, 255),
+                    color,
                     py_img.get_rect(),
                     width=max(1, round(scale)),
                 )
