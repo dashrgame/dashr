@@ -33,6 +33,9 @@ class Title(Page):
         self._cached_background_surface = None
         self._last_screen_dimensions = None
 
+        # Cache for instruction text
+        self._cached_instruction_surface = None
+
     def refresh_splash(self):
         self.splash = pick_a_splash_any_splash()
 
@@ -44,6 +47,7 @@ class Title(Page):
     def _clear_text_cache(self):
         self._cached_title_surface = None
         self._cached_subtitle_surface = None
+        self._cached_instruction_surface = None
 
     def _clear_background_cache(self):
         self._cached_background_surface = None
@@ -80,6 +84,7 @@ class Title(Page):
             self._last_ui_scale = ui_scale
             self._cached_title_surface = None
             self._cached_subtitle_surface = None
+            self._cached_instruction_surface = None
 
         # Calculate text dimensions for proper centering
         title_scale = ui_scale * TITLE_EXTRA_SCALE
@@ -158,4 +163,36 @@ class Title(Page):
         splash_position = (screen_width / 2 - splash_width / 2, splash_y)
         render_text(
             screen, splash_text, font, splash_position, splash_scale, splash_color
+        )
+
+        # Render instruction text - use cached surface if available
+        instruction_text = "Press F9 to open credits"
+        instruction_color = (255, 255, 255)
+        instruction_scale = ui_scale * 1
+        instruction_width = int(
+            font.get_text_width(instruction_text, instruction_scale)
+        )
+        instruction_x = screen_width // 2 - instruction_width // 2
+        instruction_y = screen_height - 30 * ui_scale
+        instruction_position = (instruction_x, instruction_y)
+
+        if self._cached_instruction_surface is None:
+            # Create a surface for the instruction text
+            instruction_surface = pygame.Surface(
+                (instruction_width + 20, int(font.size * instruction_scale) + 10),
+                pygame.SRCALPHA,
+            )
+            render_text(
+                instruction_surface,
+                instruction_text,
+                font,
+                (10, 5),
+                instruction_scale,
+                instruction_color,
+            )
+            self._cached_instruction_surface = instruction_surface
+
+        screen.blit(
+            self._cached_instruction_surface,
+            (instruction_position[0] - 10, instruction_position[1] - 5),
         )

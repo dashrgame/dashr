@@ -26,4 +26,4 @@ def get_specific_splash(index: int) -> Optional[str]:
 
         return splashes[index - 1]
     else:
-        return "404: Splash Not Found"
+        return None

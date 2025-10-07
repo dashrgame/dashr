@@ -13,6 +13,7 @@ from client.src.input.manager import InputManager
 from client.src.renderer.text import render_text
 from client.src.ui.page_manager import PageManager
 from client.src.ui.pages.title import Title
+from client.src.ui.pages.credits import Credits
 from client.src.update.version import (
     get_version_number_github,
     get_version_number_local,
@@ -106,6 +107,7 @@ class DashrGame:
     def _setup_ui(self):
         self.page_manager = PageManager()
         self.title_page = Title()
+        self.credits_page = Credits()
         self.page_manager.set_page(self.title_page)
 
     def _setup_input(self):
@@ -126,6 +128,7 @@ class DashrGame:
         self.input_manager.on_key_press(pygame.K_F4, self._handle_splash_refresh_key)
         self.input_manager.on_key_press(pygame.K_F5, self._handle_f5_press)
         self.input_manager.on_key_release(pygame.K_F5, self._handle_f5_release)
+        self.input_manager.on_key_press(pygame.K_F9, self._handle_credits_key)
 
     def _register_number_keys(self):
         for number_key in NUMBER_KEY_MAP.keys():
@@ -139,6 +142,15 @@ class DashrGame:
 
     def _handle_splash_refresh_key(self, key):
         self.title_page.refresh_splash()
+
+    def _handle_credits_key(self, key):
+        current_page = self.page_manager.get_current_page()
+        if current_page and current_page.id == "credits":
+            # If already on credits page, go back
+            self.page_manager.go_back()
+        else:
+            # Switch to credits page
+            self.page_manager.set_page(self.credits_page)
 
     def _handle_f5_press(self, key):
         self.f5_held = True

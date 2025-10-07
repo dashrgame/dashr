@@ -1,0 +1,121 @@
+<gold>DASHR</gold>
+
+<grey>Demo Edition</grey>
+
+<gold>DEVELOPMENT TEAM</gold>
+
+<blue>Lead Developer & Artist</blue>
+<green>proplayer919</green>
+
+<gold>ENGINE</gold>
+
+<blue>Python 3 + Pygame</blue>
+
+<gold>SPECIAL THANKS</gold>
+
+<blue>Contributors</blue>
+<grey>See</grey> <purple>github.com/dashrgame/dashr/graphs/contributors</purple>
+
+<blue>The Dashr Community</blue>
+<grey>For testing and feedback</grey>
+
+<blue>Everyone who plays and creates levels</blue>
+<grey>You make this game what it is</grey>
+
+<gold>LIBRARIES & FRAMEWORKS</gold>
+
+<blue>Python</blue>
+<grey>The programming language that powers Dashr</grey>
+
+<blue>Pygame</blue>
+<grey>For game development and graphics</grey>
+
+<blue>Pillow (PIL)</blue>
+<grey>For image processing and manipulation</grey>
+
+<blue>NumPy</blue>
+<grey>For numerical operations</grey>
+
+<gold>INSPIRATION</gold>
+
+<blue>Classic platformer games</blue>
+<grey>Like Super Mario</grey>
+<grey>That taught us the fundamentals</grey>
+
+<blue>Modern level editors</blue>
+<grey>Like in Geometry Dash</grey>
+<grey>That showed us what's possible</grey>
+
+<blue>Open source community</blue>
+<grey>For showing the way forward</grey>
+
+<gold>VERSION INFO</gold>
+
+<blue>Current build:</blue> <yellow>Demo Edition</yellow>
+<blue>License:</blue> <green>MIT License</green>
+<blue>Source:</blue> <purple>github.com/dashrgame/dashr</purple>
+
+<gold>Thank you for playing Dashr!</gold>
+
+<yellow>Keep creating, keep playing, keep dashing!</yellow>
+
+<red>- proplayer919</red>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+you can stop watching this black screen now :)

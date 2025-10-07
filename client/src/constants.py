@@ -7,8 +7,8 @@ UPSTREAM_REPO_URL = "https://github.com/dashrgame/dashr.git"
 # Window config
 DEFAULT_WIDTH = 800
 DEFAULT_HEIGHT = 480
-FULLSCREEN = False
-UI_SCALE = 1
+FULLSCREEN = True
+UI_SCALE = 2
 BACKGROUND_COLOR = (255, 255, 255)
 
 # Debug overlay config

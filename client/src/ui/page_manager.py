@@ -14,11 +14,21 @@ class PageManager:
     def set_page(self, page: Page):
         if self.current_page:
             self.navigation_stack.append(self.current_page)
+
+        if page.always_reinitialize and page.reinit_callback:
+            page.reinit_callback()
+
         self.current_page = page
 
     def go_back(self):
         if self.navigation_stack:
             self.current_page = self.navigation_stack.pop()
+
+            if (
+                self.current_page.always_reinitialize
+                and self.current_page.reinit_callback
+            ):
+                self.current_page.reinit_callback()
         else:
             self.current_page = None
 
