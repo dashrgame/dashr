@@ -28,6 +28,9 @@ TITLE_COLOR = (255, 255, 255)
 SUBTITLE_COLOR = (50, 58, 50)
 SPLASH_COLOR = (255, 215, 0)
 
+# Credits page config
+CREDITS_SCROLL_SPEED = 30  # pixels per second
+
 # Number key mappings for F5 combinations
 NUMBER_KEY_MAP = {
     pygame.K_0: "0",

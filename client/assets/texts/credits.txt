@@ -51,7 +51,7 @@
 
 <gold>VERSION INFO</gold>
 
-<blue>Current build:</blue> <yellow>Demo Edition</yellow>
+<blue>Current build:</blue> <yellow>Demo Edition&VERSION</yellow>
 <blue>License:</blue> <green>MIT License</green>
 <blue>Source:</blue> <purple>github.com/dashrgame/dashr</purple>
 

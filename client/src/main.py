@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-from collections import deque
 import threading
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
@@ -12,6 +11,8 @@ from client.src.asset.tile.tile_loader import TileLoader
 from client.src.input.manager import InputManager
 from client.src.renderer.text import render_text
 from client.src.ui.page_manager import PageManager
+from client.src.ui.overlay_manager import OverlayManager
+from client.src.ui.overlays.fps_overlay import FpsOverlay
 from client.src.ui.pages.title import Title
 from client.src.ui.pages.credits import Credits
 from client.src.update.version import (
@@ -24,7 +25,6 @@ from client.src.constants import *
 
 class DashrGame:
     def __init__(self):
-        self.debug = False
         self.running = False
         self.ui_scale = UI_SCALE
 
@@ -32,17 +32,8 @@ class DashrGame:
         self.f5_number_buffer = ""
         self.f5_held = False
 
-        # FPS tracking
-        self.fps_history = deque()
-
         # Cursor position
         self.cursor_pos = (0, 0)
-
-        # Initialize pygame and create components
-        self._initialize_pygame()
-        self._load_assets()
-        self._setup_ui()
-        self._setup_input()
 
         # Game clock
         self.clock = pygame.time.Clock()
@@ -68,6 +59,12 @@ class DashrGame:
         # Start version check in background thread
         version_thread = threading.Thread(target=get_versions, daemon=True)
         version_thread.start()
+
+        # Initialize pygame and create components
+        self._initialize_pygame()
+        self._load_assets()
+        self._setup_ui()
+        self._setup_input()
 
     def _initialize_pygame(self):
         # Set window properties before initializing pygame
@@ -105,10 +102,24 @@ class DashrGame:
         self.loaded_tiles = TileLoader.load_tiles_from_directory(tiles_dir)
 
     def _setup_ui(self):
+        # Initialize page manager
         self.page_manager = PageManager()
+
+        # Initialize overlay manager
+        self.overlay_manager = OverlayManager()
+
+        # Setup pages
         self.title_page = Title()
-        self.credits_page = Credits()
+        self.credits_page = Credits(self.current_version)
+
+        # Set the initial page
         self.page_manager.set_page(self.title_page)
+
+        # Setup overlays
+        self.fps_overlay = FpsOverlay(
+            self.clock, self.current_version, self.upstream_version
+        )
+        self.overlay_manager.add_overlay(self.fps_overlay)
 
     def _setup_input(self):
         self.input_manager = InputManager()
@@ -124,7 +135,7 @@ class DashrGame:
             lambda key: pygame.event.post(pygame.event.Event(pygame.QUIT)),
         )
         self.input_manager.on_key_press(pygame.K_F2, self._handle_screenshot_key)
-        self.input_manager.on_key_press(pygame.K_F3, self._handle_debug_toggle_key)
+
         self.input_manager.on_key_press(pygame.K_F4, self._handle_splash_refresh_key)
         self.input_manager.on_key_press(pygame.K_F5, self._handle_f5_press)
         self.input_manager.on_key_release(pygame.K_F5, self._handle_f5_release)
@@ -136,9 +147,6 @@ class DashrGame:
 
     def _handle_screenshot_key(self, key):
         self._take_screenshot()
-
-    def _handle_debug_toggle_key(self, key):
-        self.debug = not self.debug
 
     def _handle_splash_refresh_key(self, key):
         self.title_page.refresh_splash()
@@ -184,81 +192,12 @@ class DashrGame:
         except Exception as e:
             print(f"Failed to save screenshot: {e}")
 
-    def _update_fps_tracking(self):
-        current_time = time.time()
-        current_fps = self.clock.get_fps()
-        self.fps_history.append((current_time, current_fps))
-
-        # Keep only FPS data from the last second
-        while self.fps_history and current_time - self.fps_history[0][0] > 1.0:
-            self.fps_history.popleft()
-
-    def _render_debug(self):
-        if not self.debug:
-            return
-
-        current_fps = self.clock.get_fps()
-        fps_values = [fps for _, fps in self.fps_history if fps > 0]
-
-        # Calculate text dimensions based on UI scale
-        line_height = 10 * self.ui_scale
-        char_width = 6 * self.ui_scale  # Approximate character width
-        margin = 5 * self.ui_scale
-
-        if fps_values:
-            avg_fps = sum(fps_values) / len(fps_values)
-            min_fps = min(fps_values)
-            max_fps = max(fps_values)
-
-            # Prepare stats with version info
-            stats = [
-                f"- FPS: {current_fps:.1f}",
-                f"| Avg: {avg_fps:.1f}",
-                f"| Min: {min_fps:.1f}",
-                f"| Max: {max_fps:.1f}",
-                "",
-                f"- Ver: {self.current_version}",
-                f"| Up: {self.upstream_version}",
-            ]
-        else:
-            # Fallback stats when no FPS history
-            stats = [
-                f"- FPS: {current_fps:.1f}",
-                "",
-                f"- Ver: {self.current_version}",
-                f"| Up: {self.upstream_version}",
-            ]
-
-        # Calculate box dimensions based on content and scale
-        max_text_width = max(len(stat) for stat in stats) * char_width
-        box_width = max_text_width + (margin * 2)
-        box_height = len(stats) * line_height + (margin * 2)
-
-        # Position box in top-right corner with margin
-        box_x = self.width - box_width - margin
-        box_y = margin
-
-        # Draw background box
-        pygame.draw.rect(
-            self.screen, DEBUG_BOX_COLOR, (box_x, box_y, box_width, box_height)
-        )
-
-        # Render all statistics
-        for i, stat in enumerate(stats):
-            text_x = box_x + margin
-            text_y = box_y + margin + (i * line_height)
-            render_text(
-                self.screen,
-                stat,
-                self.font,
-                (text_x, text_y),
-                scale=self.ui_scale,
-                color=DEBUG_TEXT_COLOR,
-            )
-
     def _handle_event(self, event):
         if event.type == pygame.MOUSEMOTION:
             self.cursor_pos = event.pos
+        elif event.type == pygame.KEYDOWN:
+            # Handle overlay toggle keys
+            self.overlay_manager.handle_key_press(event.key)
 
         self.input_manager.handle_event(event)
 
@@ -270,7 +209,11 @@ class DashrGame:
             self._handle_event(event)
 
     def _update(self):
-        self._update_fps_tracking()
+        # Update FPS tracking for FPS overlay
+        self.fps_overlay.update_fps_tracking()
+
+        # Update overlay versions in case they changed
+        self.fps_overlay.set_versions(self.current_version, self.upstream_version)
 
     def _render(self):
         # Clear screen
@@ -281,8 +224,10 @@ class DashrGame:
             self.screen, self.font, self.loaded_tiles, self.cursor_pos, self.ui_scale
         )
 
-        # Render debug information
-        self._render_debug()
+        # Render overlays
+        self.overlay_manager.render_all(
+            self.screen, self.font, self.loaded_tiles, self.cursor_pos, self.ui_scale
+        )
 
         # Update display
         pygame.display.flip()

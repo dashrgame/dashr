@@ -2,6 +2,7 @@ import pygame
 import os
 import time
 import re
+from typing import Optional
 
 from client.src.renderer.text import render_text
 from client.src.asset.font.font import Font
@@ -11,10 +12,12 @@ from client.src.constants import *
 
 
 class Credits(Page):
-    def __init__(self):
+    def __init__(self, current_version: Optional[str] = None):
         super().__init__(
             "credits", always_reinitialize=True, reinit_callback=self.page_init
         )
+
+        self.current_version = current_version
 
     def page_init(self):
         # Load credits text
@@ -22,7 +25,10 @@ class Credits(Page):
         credits_file = os.path.join("client", "assets", "texts", "credits.txt")
         try:
             with open(credits_file, "r", encoding="utf-8") as f:
-                self.credits_lines = [line.rstrip() for line in f.readlines()]
+                version = f" ({self.current_version})" if self.current_version else ""
+                self.credits_lines = [
+                    line.rstrip().replace("&VERSION", version) for line in f.readlines()
+                ]
                 self.credits_lines.reverse()  # Reverse for bottom-up rendering
         except FileNotFoundError:
             self.credits_lines = ["Credits file not found!"]
@@ -30,7 +36,7 @@ class Credits(Page):
         # Animation state
         self.scroll_offset = 0
         self.start_time = time.time()
-        self.scroll_speed = 30  # pixels per second
+        self.scroll_speed = CREDITS_SCROLL_SPEED  # pixels per second
 
         # Credits configuration
         self.line_height = 20  # pixels between lines
@@ -66,7 +72,6 @@ class Credits(Page):
                 current_offset += self.line_height
 
     def _clear_caches_if_needed(self, ui_scale):
-        """Clear caches if UI scale changed or they're too large"""
         if (
             self._last_ui_scale != ui_scale
             or len(self.width_cache) > self.max_cache_size
@@ -152,7 +157,6 @@ class Credits(Page):
         return segments
 
     def _get_or_create_surface(self, text, font, scale, color):
-        """Get cached surface or create new one"""
         cache_key = (text, scale, color)
         if cache_key not in self.surface_cache:
             # Create a temporary surface to render text on
@@ -170,7 +174,6 @@ class Credits(Page):
     def _get_visible_line_range(
         self, start_y, scroll_offset, screen_height, ui_scale, visibility_margin
     ):
-        """Get range of visible lines using binary search for large lists"""
         if len(self._line_offsets) < 50:  # Use simple iteration for small lists
             return 0, len(self._line_offsets)
 
