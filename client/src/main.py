@@ -77,7 +77,12 @@ class DashrGame:
 
         # Set up display
         self.width, self.height = DEFAULT_WIDTH, DEFAULT_HEIGHT
-        flags = pygame.FULLSCREEN if FULLSCREEN else 0
+        flags = (
+            (pygame.FULLSCREEN if FULLSCREEN else 0)
+            | pygame.RESIZABLE
+            | pygame.HWSURFACE
+            | pygame.DOUBLEBUF
+        )
         self.screen = pygame.display.set_mode(
             size=(self.width, self.height), flags=flags
         )

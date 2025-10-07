@@ -9,6 +9,7 @@ class Font:
         self.size = size
         self.characters = characters  # Mapping from character to its FontCharacter
         self.icons = icons # Mapping from icon ID to its IconCharacter
+        self._text_width_cache = {}  # Cache for text width calculations
 
     def get_character_image(self, char: str) -> Image.Image | None:
         font_char = self.characters.get(char)
@@ -20,6 +21,11 @@ class Font:
     def get_text_width(self, text: str, ui_scale: float) -> float:
         if not text:
             return 0.0
+
+        # Use cache key based on text and scale
+        cache_key = (text, ui_scale)
+        if cache_key in self._text_width_cache:
+            return self._text_width_cache[cache_key]
 
         total_width = 0.0
         spacing = 1.0 * ui_scale
@@ -55,4 +61,6 @@ class Font:
                     total_width += spacing
                 i += 1
 
+        # Cache the result for future use
+        self._text_width_cache[cache_key] = total_width
         return total_width

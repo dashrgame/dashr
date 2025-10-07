@@ -21,12 +21,10 @@ class FpsOverlay(Overlay):
         self.upstream_version = upstream_version
 
     def set_versions(self, current_version: str, upstream_version: str):
-        """Update version information"""
         self.current_version = current_version
         self.upstream_version = upstream_version
 
     def update_fps_tracking(self):
-        """Update FPS tracking data - should be called in the main update loop"""
         current_time = time.time()
         current_fps = self.clock.get_fps()
         self.fps_history.append((current_time, current_fps))

@@ -7,6 +7,7 @@ class FontCharacter:
         self.image = image
 
         self.size = self.image.size  # (width, height)
+        self._cached_actual_width = None  # Cache the computed width
 
     def get_image(self) -> Image.Image:
         return self.image
@@ -15,13 +16,24 @@ class FontCharacter:
         return self.size
 
     def get_width(self, ui_scale: float) -> float:
+        # Use cached width if available
+        if self._cached_actual_width is None:
+            self._compute_actual_width()
+
+        # _cached_actual_width is guaranteed to be set after _compute_actual_width()
+        return self._cached_actual_width * ui_scale  # type: ignore
+
+    def _compute_actual_width(self):
         # Find the leftmost and rightmost non-transparent pixels
         left_bound = self.size[0]
         right_bound = -1
 
+        # Use PIL's more efficient pixel access
+        pixels = self.image.load()
+
         for x in range(self.size[0]):
             for y in range(self.size[1]):
-                pixel = self.image.getpixel((x, y))
+                pixel = pixels[x, y] if pixels else self.image.getpixel((x, y))
                 # Check if pixel has alpha channel and is not transparent
                 if isinstance(pixel, tuple) and len(pixel) == 4 and pixel[3] > 0:
                     left_bound = min(left_bound, x)
@@ -34,10 +46,9 @@ class FontCharacter:
                     left_bound = min(left_bound, x)
                     right_bound = max(right_bound, x)
 
-        # If no non-transparent pixels found, return scaled full width
+        # If no non-transparent pixels found, cache full width
         if right_bound == -1:
-            return self.image.width * ui_scale
-
-        # Calculate actual character width and scale it (keep as float for precision)
-        actual_width = right_bound - left_bound + 1
-        return actual_width * ui_scale
+            self._cached_actual_width = float(self.image.width)
+        else:
+            # Calculate actual character width and cache it
+            self._cached_actual_width = float(right_bound - left_bound + 1)
