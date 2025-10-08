@@ -16,6 +16,9 @@ class Page:
         self.always_reinitialize = always_reinitialize
         self.reinit_callback = reinit_callback
 
+    def handle_click(self, click_pos: tuple[int, int], button_no: int):
+        pass
+
     def render(
         self,
         screen: pygame.Surface,

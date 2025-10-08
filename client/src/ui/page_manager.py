@@ -35,6 +35,10 @@ class PageManager:
     def get_current_page(self) -> Optional[Page]:
         return self.current_page
 
+    def handle_click(self, click_pos: tuple[int, int], button_no: int):
+        if self.current_page:
+            self.current_page.handle_click(click_pos, button_no)
+
     def render_current_page(
         self,
         screen: pygame.Surface,

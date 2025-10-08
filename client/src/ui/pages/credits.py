@@ -281,7 +281,7 @@ class Credits(Page):
         # Cache instruction surface and position
         instruction_cache_key = f"instruction_{ui_scale}"
         if instruction_cache_key not in self.position_cache:
-            instruction_text = "Press F9 to return to title"
+            instruction_text = "Press F9/ESC to return to title"
             instruction_color = (128, 128, 128)
             instruction_scale = ui_scale * 1
 

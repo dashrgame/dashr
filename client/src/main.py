@@ -3,6 +3,8 @@ import sys
 import time
 import threading
 
+from client.src.ui.components import button
+
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
 
@@ -15,6 +17,9 @@ from client.src.ui.overlay_manager import OverlayManager
 from client.src.ui.overlays.fps_overlay import FpsOverlay
 from client.src.ui.pages.title import Title
 from client.src.ui.pages.credits import Credits
+from client.src.ui.pages.play import PlayPage
+from client.src.ui.pages.create import CreatePage
+from client.src.ui.pages.settings import SettingsPage
 from client.src.update.version import (
     get_version_number_github,
     get_version_number_local,
@@ -115,8 +120,18 @@ class DashrGame:
         self.overlay_manager = OverlayManager()
 
         # Setup pages
-        self.title_page = Title()
+        self.play_page = PlayPage()
+        self.create_page = CreatePage()
+        self.settings_page = SettingsPage()
         self.credits_page = Credits(self.current_version)
+
+        # Setup title page with button callbacks
+        button_callbacks = {
+            "play": lambda: self.page_manager.set_page(self.play_page),
+            "create": lambda: self.page_manager.set_page(self.create_page),
+            "settings": lambda: self.page_manager.set_page(self.settings_page),
+        }
+        self.title_page = Title(button_callbacks=button_callbacks)
 
         # Set the initial page
         self.page_manager.set_page(self.title_page)
@@ -132,13 +147,13 @@ class DashrGame:
         self.input_manager.start()
 
         # Register key handlers
-        self._register_function_keys()
+        self._register_action_keys()
         self._register_number_keys()
 
-    def _register_function_keys(self):
+    def _register_action_keys(self):
         self.input_manager.on_key_press(
             pygame.K_ESCAPE,
-            lambda key: pygame.event.post(pygame.event.Event(pygame.QUIT)),
+            lambda key: self._handle_escape_key(key),
         )
         self.input_manager.on_key_press(pygame.K_F2, self._handle_screenshot_key)
 
@@ -157,6 +172,13 @@ class DashrGame:
 
     def _handle_splash_refresh_key(self, key):
         self.title_page.refresh_splash()
+
+    def _handle_escape_key(self, key):
+        current_page = self.page_manager.get_current_page()
+        if current_page and current_page.id != "title":
+            self.page_manager.go_back()
+        else:
+            self.running = False
 
     def _handle_credits_key(self, key):
         current_page = self.page_manager.get_current_page()
@@ -183,6 +205,9 @@ class DashrGame:
     def _handle_number_key(self, key):
         if self.f5_held and key in NUMBER_KEY_MAP:
             self.f5_number_buffer += NUMBER_KEY_MAP[key]
+
+    def _handle_mouse_click(self, click_pos: tuple[int, int], button_no: int):
+        self.page_manager.handle_click(click_pos, button_no)
 
     def _handle_fullscreen_toggle(self, key):
         # Toggle fullscreen state
@@ -223,6 +248,8 @@ class DashrGame:
     def _handle_event(self, event):
         if event.type == pygame.MOUSEMOTION:
             self.cursor_pos = event.pos
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            self._handle_mouse_click(event.pos, event.button)
         elif event.type == pygame.KEYDOWN:
             # Handle overlay toggle keys
             self.overlay_manager.handle_key_press(event.key)
