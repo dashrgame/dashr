@@ -274,7 +274,7 @@ class Title(Page):
             button.render(screen, font, ui_scale)
 
         # Render instruction text - use cached surface if available
-        instruction_text = "Press F9 to open credits"
+        instruction_text = "Press F9 to open credits | Press ESC to quit"
         instruction_color = (255, 255, 255)
         instruction_scale = ui_scale * 1
         instruction_width = int(
