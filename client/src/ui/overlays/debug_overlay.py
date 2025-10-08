@@ -7,14 +7,14 @@ from client.src.renderer.text import render_text
 from client.src.constants import DEBUG_BOX_COLOR, DEBUG_TEXT_COLOR
 
 
-class FpsOverlay(Overlay):
+class DebugOverlay(Overlay):
     def __init__(
         self,
         clock: pygame.time.Clock,
         current_version: str = "unknown",
         upstream_version: str = "unknown",
     ):
-        super().__init__("fps_debug", enabled=False, toggle_key=pygame.K_F3)
+        super().__init__("debug", enabled=False, toggle_key=pygame.K_F3)
         self.clock = clock
         self.fps_history = deque()
         self.current_version = current_version

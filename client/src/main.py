@@ -14,7 +14,7 @@ from client.src.input.manager import InputManager
 from client.src.renderer.text import render_text
 from client.src.ui.page_manager import PageManager
 from client.src.ui.overlay_manager import OverlayManager
-from client.src.ui.overlays.fps_overlay import FpsOverlay
+from client.src.ui.overlays.debug_overlay import DebugOverlay
 from client.src.ui.pages.title import Title
 from client.src.ui.pages.credits import Credits
 from client.src.ui.pages.play import PlayPage
@@ -137,10 +137,10 @@ class DashrGame:
         self.page_manager.set_page(self.title_page)
 
         # Setup overlays
-        self.fps_overlay = FpsOverlay(
+        self.debug_overlay = DebugOverlay(
             self.clock, self.current_version, self.upstream_version
         )
-        self.overlay_manager.add_overlay(self.fps_overlay)
+        self.overlay_manager.add_overlay(self.debug_overlay)
 
     def _setup_input(self):
         self.input_manager = InputManager()
@@ -265,10 +265,10 @@ class DashrGame:
 
     def _update(self):
         # Update FPS tracking for FPS overlay
-        self.fps_overlay.update_fps_tracking()
+        self.debug_overlay.update_fps_tracking()
 
         # Update overlay versions in case they changed
-        self.fps_overlay.set_versions(self.current_version, self.upstream_version)
+        self.debug_overlay.set_versions(self.current_version, self.upstream_version)
 
     def _render(self):
         # Clear screen
