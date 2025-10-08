@@ -1,6 +1,7 @@
 import pygame
 import time
 from collections import deque
+from typing import Optional, Tuple
 
 from client.src.ui.overlay import Overlay
 from client.src.renderer.text import render_text
@@ -19,6 +20,13 @@ class DebugOverlay(Overlay):
         self.fps_history = deque()
         self.current_version = current_version
         self.upstream_version = upstream_version
+        # Cache for the rendered overlay surface to avoid rebuilding every frame
+        self._cached_surface: Optional[pygame.Surface] = None
+        # A key representing the last rendered stats (to detect changes)
+        self._cached_key: Optional[Tuple] = None
+        # Throttle re-renders to at most 5Hz (200ms)
+        self._last_render_time: float = 0.0
+        self._min_update_interval: float = 0.2
 
     def set_versions(self, current_version: str, upstream_version: str):
         self.current_version = current_version
@@ -44,10 +52,10 @@ class DebugOverlay(Overlay):
         current_fps = self.clock.get_fps()
         fps_values = [fps for _, fps in self.fps_history if fps > 0]
 
-        # Calculate text dimensions based on UI scale
-        line_height = 10 * ui_scale
-        char_width = 6 * ui_scale  # Approximate character width
-        margin = 5 * ui_scale
+        # Calculate text dimensions based on UI scale and font
+        # Use font.size to align with actual glyph dimensions
+        line_height = max(1, round(font.size * ui_scale))
+        margin = max(1, round(5 * ui_scale))
 
         if fps_values:
             avg_fps = sum(fps_values) / len(fps_values)
@@ -88,9 +96,14 @@ class DebugOverlay(Overlay):
                 f"| Up: {self.upstream_version}",
             ]
 
-        # Calculate box dimensions based on content and scale
-        max_text_width = max(len(stat) for stat in stats) * char_width
-        box_width = max_text_width + (margin * 2)
+        # Calculate box dimensions based on content and scale using font measurements
+        max_text_width = 0.0
+        for stat in stats:
+            w = font.get_text_width(stat, ui_scale)
+            if w > max_text_width:
+                max_text_width = w
+
+        box_width = max(1, round(max_text_width)) + (margin * 2)
         box_height = len(stats) * line_height + (margin * 2)
 
         # Position box in top-right corner with margin
@@ -98,18 +111,53 @@ class DebugOverlay(Overlay):
         box_x = screen_width - box_width - margin
         box_y = margin
 
-        # Draw background box
-        pygame.draw.rect(screen, DEBUG_BOX_COLOR, (box_x, box_y, box_width, box_height))
+        # Build a key summarizing what is being displayed. Quantize numeric values
+        # to avoid re-rendering for tiny fluctuations.
+        def _quant(v: float) -> float:
+            # quantize to 1 decimal place
+            try:
+                return round(float(v), 1)
+            except Exception:
+                return v
 
-        # Render all statistics
-        for i, stat in enumerate(stats):
-            text_x = box_x + margin
-            text_y = box_y + margin + (i * line_height)
-            render_text(
-                screen,
-                stat,
-                font,
-                (text_x, text_y),
-                scale=ui_scale,
-                color=DEBUG_TEXT_COLOR,
-            )
+        # Create a tuple key from the stats so we can detect changes cheaply
+        stats_key = tuple(
+            _quant(s) if isinstance(s, (int, float)) else s for s in stats
+        ) + (ui_scale,)
+
+        now = time.time()
+        should_rerender = False
+        if self._cached_surface is None or self._cached_key != stats_key:
+            # content changed
+            should_rerender = True
+        elif now - self._last_render_time > self._min_update_interval:
+            # force an occasional refresh even if key matches (in case of stale cache)
+            should_rerender = True
+
+        if should_rerender:
+            # Create an offscreen surface to render the box once
+            surf = pygame.Surface((box_width, box_height), pygame.SRCALPHA)
+            # Draw background box onto the offscreen surface
+            pygame.draw.rect(surf, DEBUG_BOX_COLOR, (0, 0, box_width, box_height))
+
+            # Render each stat into the offscreen surface
+            for i, stat in enumerate(stats):
+                text_x = margin
+                text_y = margin + (i * line_height)
+                render_text(
+                    surf,
+                    stat,
+                    font,
+                    (text_x, text_y),
+                    scale=ui_scale,
+                    color=DEBUG_TEXT_COLOR,
+                )
+
+            # Cache results
+            self._cached_surface = surf
+            self._cached_key = stats_key
+            self._last_render_time = now
+
+        # Blit cached surface to screen at calculated position
+        if self._cached_surface:
+            screen.blit(self._cached_surface, (box_x, box_y))
