@@ -27,6 +27,7 @@ class DashrGame:
     def __init__(self):
         self.running = False
         self.ui_scale = UI_SCALE
+        self.is_fullscreen = FULLSCREEN
 
         # F5 combination state
         self.f5_number_buffer = ""
@@ -145,6 +146,7 @@ class DashrGame:
         self.input_manager.on_key_press(pygame.K_F5, self._handle_f5_press)
         self.input_manager.on_key_release(pygame.K_F5, self._handle_f5_release)
         self.input_manager.on_key_press(pygame.K_F9, self._handle_credits_key)
+        self.input_manager.on_key_press(pygame.K_F11, self._handle_fullscreen_toggle)
 
     def _register_number_keys(self):
         for number_key in NUMBER_KEY_MAP.keys():
@@ -181,6 +183,27 @@ class DashrGame:
     def _handle_number_key(self, key):
         if self.f5_held and key in NUMBER_KEY_MAP:
             self.f5_number_buffer += NUMBER_KEY_MAP[key]
+
+    def _handle_fullscreen_toggle(self, key):
+        # Toggle fullscreen state
+        self.is_fullscreen = not self.is_fullscreen
+
+        # Update UI scale based on fullscreen state
+        if self.is_fullscreen:
+            self.ui_scale = DEFAULT_FULLSCREEN_UI_SCALE
+        else:
+            self.ui_scale = DEFAULT_UI_SCALE
+
+        # Recreate the display with new flags
+        flags = (
+            (pygame.FULLSCREEN if self.is_fullscreen else 0)
+            | pygame.RESIZABLE
+            | pygame.HWSURFACE
+            | pygame.DOUBLEBUF
+        )
+        self.screen = pygame.display.set_mode(
+            size=(self.width, self.height), flags=flags
+        )
 
     def _take_screenshot(self):
         screenshots_dir = os.path.expanduser(
