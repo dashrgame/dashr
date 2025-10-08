@@ -54,20 +54,35 @@ class DebugOverlay(Overlay):
             min_fps = min(fps_values)
             max_fps = max(fps_values)
 
+            # Compute ms per frame (use current FPS when available, otherwise avg)
+            selected_fps = current_fps if current_fps > 0 else avg_fps
+            if selected_fps > 0:
+                mspf = 1000.0 / selected_fps
+            else:
+                mspf = 0.0
+
             # Prepare stats with version info
             stats = [
                 f"- FPS: {current_fps:.1f}",
                 f"| Avg: {avg_fps:.1f}",
                 f"| Min: {min_fps:.1f}",
                 f"| Max: {max_fps:.1f}",
+                f"| MSPF: {mspf:.1f} ms",
                 "",
                 f"- Ver: {self.current_version}",
                 f"| Up: {self.upstream_version}",
             ]
         else:
             # Fallback stats when no FPS history
+            # Compute mspf from current FPS if possible
+            if current_fps > 0:
+                mspf = 1000.0 / current_fps
+            else:
+                mspf = 0.0
+
             stats = [
                 f"- FPS: {current_fps:.1f}",
+                f"| mspf: {mspf:.1f} ms",
                 "",
                 f"- Ver: {self.current_version}",
                 f"| Up: {self.upstream_version}",
