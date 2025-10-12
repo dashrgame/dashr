@@ -66,11 +66,11 @@ def render_text(
 
             # Calculate combined scale factor
             target_size = font.size  # Target icon size
-            
+
             # Calculate final dimensions with combined scaling
             final_w = max(1, round(target_size * scale))
             final_h = max(1, round(target_size * scale))
-            
+
             # Apply combined scale in one operation
             py_img = pygame.transform.scale(py_img, (final_w, final_h))
 
